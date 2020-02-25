@@ -170,22 +170,17 @@ export interface Chat {
 	last_name?: string;
 
 	/**
-	 * _Optional_. True if a group has ‘All Members Are Admins’ enabled.
-	 */
-	all_members_are_administrators?: boolean;
-
-	/**
 	 * _Optional_. Chat photo. Returned only in [getChat](https://core.telegram.org/bots/api#getchat).
 	 */
 	photo?: ChatPhoto;
 
 	/**
-	 * _Optional_. Description, for supergroups and channel chats. Returned only in [getChat](https://core.telegram.org/bots/api#getchat).
+	 * _Optional_. Description, for groups, supergroups and channel chats. Returned only in [getChat](https://core.telegram.org/bots/api#getchat).
 	 */
 	description?: string;
 
 	/**
-	 * _Optional_. Chat invite link, for supergroups and channel chats. Each administrator in a chat generates their own invite links, so the bot must first generate the link using [exportChatInviteLink](https://core.telegram.org/bots/api#exportchatinvitelink). Returned only in [getChat](https://core.telegram.org/bots/api#getchat).
+	 * _Optional_. Chat invite link, for groups, supergroups and channel chats. Each administrator in a chat generates their own invite links, so the bot must first generate the link using [exportChatInviteLink](https://core.telegram.org/bots/api#exportchatinvitelink). Returned only in [getChat](https://core.telegram.org/bots/api#getchat).
 	 */
 	invite_link?: string;
 
@@ -193,6 +188,11 @@ export interface Chat {
 	 * _Optional_. Pinned message, for groups, supergroups and channels. Returned only in [getChat](https://core.telegram.org/bots/api#getchat).
 	 */
 	pinned_message?: Message;
+
+	/**
+	 * _Optional_. Default chat member permissions, for groups and supergroups. Returned only in [getChat](https://core.telegram.org/bots/api#getchat).
+	 */
+	permissions?: ChatPermissions;
 
 	/**
 	 * _Optional_. For supergroups, name of group sticker set. Returned only in [getChat](https://core.telegram.org/bots/api#getchat).
@@ -480,7 +480,7 @@ export interface MessageEntity {
  */
 export interface PhotoSize {
 	/**
-	 * Unique identifier for this file
+	 * Identifier for this file
 	 */
 	file_id: string;
 
@@ -505,7 +505,7 @@ export interface PhotoSize {
  */
 export interface Audio {
 	/**
-	 * Unique identifier for this file
+	 * Identifier for this file
 	 */
 	file_id: string;
 
@@ -545,7 +545,7 @@ export interface Audio {
  */
 export interface Document {
 	/**
-	 * Unique file identifier
+	 * Identifier for this file
 	 */
 	file_id: string;
 
@@ -575,7 +575,7 @@ export interface Document {
  */
 export interface Video {
 	/**
-	 * Unique identifier for this file
+	 * Identifier for this file
 	 */
 	file_id: string;
 
@@ -615,7 +615,7 @@ export interface Video {
  */
 export interface Animation {
 	/**
-	 * Unique file identifier
+	 * Identifier for this file
 	 */
 	file_id: string;
 
@@ -660,7 +660,7 @@ export interface Animation {
  */
 export interface Voice {
 	/**
-	 * Unique identifier for this file
+	 * Identifier for this file
 	 */
 	file_id: string;
 
@@ -685,7 +685,7 @@ export interface Voice {
  */
 export interface VideoNote {
 	/**
-	 * Unique identifier for this file
+	 * Identifier for this file
 	 */
 	file_id: string;
 
@@ -847,7 +847,7 @@ export interface UserProfilePhotos {
  */
 export interface File {
 	/**
-	 * Unique identifier for this file
+	 * Identifier for this file
 	 */
 	file_id: string;
 
@@ -1070,11 +1070,11 @@ export interface CallbackQuery {
  * Upon receiving a message with this object, Telegram clients will display a reply interface to the user (act as if the user has selected the bot‘s message and tapped ’Reply'). This can be extremely useful if you want to create user-friendly step-by-step interfaces without having to sacrifice [privacy mode](https://core.telegram.org/bots#privacy-mode).
  *
  * > **Example:** A [poll bot](https://t.me/PollBot) for groups runs in privacy mode (only receives commands, replies to its messages and mentions). There could be two ways to create a new poll:
- *
- * - Explain the user how to send a command with parameters (e.g. /newpoll question answer1 answer2). May be appealing for hardcore users but lacks modern day polish.
- * - Guide the user through a step-by-step process. ‘Please send me your question’, ‘Cool, now let’s add the first answer option‘, ’Great. Keep adding answer options, then send /done when you‘re ready’.
- *
- * The last option is definitely more attractive. And if you use [ForceReply](https://core.telegram.org/bots/api#forcereply) in your bot‘s questions, it will receive the user’s answers even if it only receives replies, commands and mentions — without any extra work for the user.
+ * >
+ * > - Explain the user how to send a command with parameters (e.g. /newpoll question answer1 answer2). May be appealing for hardcore users but lacks modern day polish.
+ * > - Guide the user through a step-by-step process. ‘Please send me your question’, ‘Cool, now let’s add the first answer option‘, ’Great. Keep adding answer options, then send /done when you‘re ready’.
+ * >
+ * > The last option is definitely more attractive. And if you use [ForceReply](https://core.telegram.org/bots/api#forcereply) in your bot‘s questions, it will receive the user’s answers even if it only receives replies, commands and mentions — without any extra work for the user.
  */
 export interface ForceReply {
 	/**
@@ -1093,12 +1093,12 @@ export interface ForceReply {
  */
 export interface ChatPhoto {
 	/**
-	 * Unique file identifier of small (160x160) chat photo. This file_id can be used only for photo download.
+	 * File identifier of small (160x160) chat photo. This file_id can be used only for photo download and only for as long as the photo is not changed.
 	 */
 	small_file_id: string;
 
 	/**
-	 * Unique file identifier of big (640x640) chat photo. This file_id can be used only for photo download.
+	 * File identifier of big (640x640) chat photo. This file_id can be used only for photo download and only for as long as the photo is not changed.
 	 */
 	big_file_id: string;
 }
@@ -1118,7 +1118,7 @@ export interface ChatMember {
 	status: "creator" | "administrator" | "member" | "restricted" | "left" | "kicked";
 
 	/**
-	 * _Optional_. Restricted and kicked only. Date when restrictions will be lifted for this user, unix time
+	 * _Optional_. Restricted and kicked only. Date when restrictions will be lifted for this user; unix time
 	 */
 	until_date?: number;
 
@@ -1128,17 +1128,12 @@ export interface ChatMember {
 	can_be_edited?: boolean;
 
 	/**
-	 * _Optional_. Administrators only. True, if the administrator can change the chat title, photo and other settings
-	 */
-	can_change_info?: boolean;
-
-	/**
-	 * _Optional_. Administrators only. True, if the administrator can post in the channel, channels only
+	 * _Optional_. Administrators only. True, if the administrator can post in the channel; channels only
 	 */
 	can_post_messages?: boolean;
 
 	/**
-	 * _Optional_. Administrators only. True, if the administrator can edit messages of other users and can pin messages, channels only
+	 * _Optional_. Administrators only. True, if the administrator can edit messages of other users and can pin messages; channels only
 	 */
 	can_edit_messages?: boolean;
 
@@ -1148,19 +1143,9 @@ export interface ChatMember {
 	can_delete_messages?: boolean;
 
 	/**
-	 * _Optional_. Administrators only. True, if the administrator can invite new users to the chat
-	 */
-	can_invite_users?: boolean;
-
-	/**
 	 * _Optional_. Administrators only. True, if the administrator can restrict, ban or unban chat members
 	 */
 	can_restrict_members?: boolean;
-
-	/**
-	 * _Optional_. Administrators only. True, if the administrator can pin messages, groups and supergroups only
-	 */
-	can_pin_messages?: boolean;
 
 	/**
 	 * _Optional_. Administrators only. True, if the administrator can add new administrators with a subset of his own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by the user)
@@ -1168,29 +1153,94 @@ export interface ChatMember {
 	can_promote_members?: boolean;
 
 	/**
+	 * _Optional_. Administrators and restricted only. True, if the user is allowed to change the chat title, photo and other settings
+	 */
+	can_change_info?: boolean;
+
+	/**
+	 * _Optional_. Administrators and restricted only. True, if the user is allowed to invite new users to the chat
+	 */
+	can_invite_users?: boolean;
+
+	/**
+	 * _Optional_. Administrators and restricted only. True, if the user is allowed to pin messages; groups and supergroups only
+	 */
+	can_pin_messages?: boolean;
+
+	/**
 	 * _Optional_. Restricted only. True, if the user is a member of the chat at the moment of the request
 	 */
 	is_member?: boolean;
 
 	/**
-	 * _Optional_. Restricted only. True, if the user can send text messages, contacts, locations and venues
+	 * _Optional_. Restricted only. True, if the user is allowed to send text messages, contacts, locations and venues
 	 */
 	can_send_messages?: boolean;
 
 	/**
-	 * _Optional_. Restricted only. True, if the user can send audios, documents, photos, videos, video notes and voice notes, implies can_send_messages
+	 * _Optional_. Restricted only. True, if the user is allowed to send audios, documents, photos, videos, video notes and voice notes
 	 */
 	can_send_media_messages?: boolean;
 
 	/**
-	 * _Optional_. Restricted only. True, if the user can send animations, games, stickers and use inline bots, implies can_send_media_messages
+	 * _Optional_. Restricted only. True, if the user is allowed to send polls
+	 */
+	can_send_polls?: boolean;
+
+	/**
+	 * _Optional_. Restricted only. True, if the user is allowed to send animations, games, stickers and use inline bots
 	 */
 	can_send_other_messages?: boolean;
 
 	/**
-	 * _Optional_. Restricted only. True, if user may add web page previews to his messages, implies can_send_media_messages
+	 * _Optional_. Restricted only. True, if the user is allowed to add web page previews to their messages
 	 */
 	can_add_web_page_previews?: boolean;
+}
+
+/**
+ * Describes actions that a non-administrator user is allowed to take in a chat.
+ */
+export interface ChatPermissions {
+	/**
+	 * _Optional_. True, if the user is allowed to send text messages, contacts, locations and venues
+	 */
+	can_send_messages?: boolean;
+
+	/**
+	 * _Optional_. True, if the user is allowed to send audios, documents, photos, videos, video notes and voice notes, implies can_send_messages
+	 */
+	can_send_media_messages?: boolean;
+
+	/**
+	 * _Optional_. True, if the user is allowed to send polls, implies can_send_messages
+	 */
+	can_send_polls?: boolean;
+
+	/**
+	 * _Optional_. True, if the user is allowed to send animations, games, stickers and use inline bots, implies can_send_media_messages
+	 */
+	can_send_other_messages?: boolean;
+
+	/**
+	 * _Optional_. True, if the user is allowed to add web page previews to their messages, implies can_send_media_messages
+	 */
+	can_add_web_page_previews?: boolean;
+
+	/**
+	 * _Optional_. True, if the user is allowed to change the chat title, photo and other settings. Ignored in public supergroups
+	 */
+	can_change_info?: boolean;
+
+	/**
+	 * _Optional_. True, if the user is allowed to invite new users to the chat
+	 */
+	can_invite_users?: boolean;
+
+	/**
+	 * _Optional_. True, if the user is allowed to pin messages. Ignored in public supergroups
+	 */
+	can_pin_messages?: boolean;
 }
 
 /**
@@ -1430,7 +1480,7 @@ export interface InputFile {
  */
 export interface Sticker {
 	/**
-	 * Unique identifier for this file
+	 * Identifier for this file
 	 */
 	file_id: string;
 
@@ -1443,6 +1493,11 @@ export interface Sticker {
 	 * Sticker height
 	 */
 	height: number;
+
+	/**
+	 * _True_, if the sticker is [animated](https://telegram.org/blog/animated-stickers)
+	 */
+	is_animated: boolean;
 
 	/**
 	 * _Optional_. Sticker thumbnail in the .webp or .jpg format
@@ -1483,6 +1538,11 @@ export interface StickerSet {
 	 * Sticker set title
 	 */
 	title: string;
+
+	/**
+	 * _True_, if the sticker set contains [animated stickers](https://telegram.org/blog/animated-stickers)
+	 */
+	is_animated: boolean;
 
 	/**
 	 * _True_, if the sticker set contains masks
@@ -2455,7 +2515,7 @@ export interface InlineQueryResultCachedMpeg4Gif {
 /**
  * Represents a link to a sticker stored on the Telegram servers. By default, this sticker will be sent by the user. Alternatively, you can use _input_message_content_ to send a message with the specified content instead of the sticker.
  *
- * **Note:** This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.
+ * **Note:** This will only work in Telegram versions released after 9 April, 2016 for static stickers and after 06 July, 2019 for [animated stickers](https://telegram.org/blog/animated-stickers). Older clients will ignore them.
  */
 export interface InlineQueryResultCachedSticker {
 	/**
@@ -3067,7 +3127,7 @@ export interface PassportData {
  */
 export interface PassportFile {
 	/**
-	 * Unique identifier for this file
+	 * Identifier for this file
 	 */
 	file_id: string;
 
@@ -4297,29 +4357,14 @@ export interface RestrictChatMemberParameters {
 	user_id: number;
 
 	/**
+	 * New user permissions
+	 */
+	permissions: ChatPermissions;
+
+	/**
 	 * Date when restrictions will be lifted for the user, unix time. If user is restricted for more than 366 days or less than 30 seconds from the current time, they are considered to be restricted forever
 	 */
 	until_date?: number;
-
-	/**
-	 * Pass True, if the user can send text messages, contacts, locations and venues
-	 */
-	can_send_messages?: boolean;
-
-	/**
-	 * Pass True, if the user can send audios, documents, photos, videos, video notes and voice notes, implies can_send_messages
-	 */
-	can_send_media_messages?: boolean;
-
-	/**
-	 * Pass True, if the user can send animations, games, stickers and use inline bots, implies can_send_media_messages
-	 */
-	can_send_other_messages?: boolean;
-
-	/**
-	 * Pass True, if the user may add web page previews to their messages, implies can_send_media_messages
-	 */
-	can_add_web_page_previews?: boolean;
 }
 
 /**
@@ -4375,6 +4420,21 @@ export interface PromoteChatMemberParameters {
 	 * Pass True, if the administrator can add new administrators with a subset of his own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by him)
 	 */
 	can_promote_members?: boolean;
+}
+
+/**
+ * `setChatPermissions` parameters
+ */
+export interface SetChatPermissionsParameters {
+	/**
+	 * Unique identifier for the target chat or username of the target supergroup (in the format `@supergroupusername`)
+	 */
+	chat_id: number | string;
+
+	/**
+	 * New default chat permissions
+	 */
+	permissions: ChatPermissions;
 }
 
 /**
@@ -5376,7 +5436,7 @@ export default abstract class AbstractApi {
 	abstract unbanChatMember(parameters: UnbanChatMemberParameters): Promise<boolean>;
 
 	/**
-	 * Use this method to restrict a user in a supergroup. The bot must be an administrator in the supergroup for this to work and must have the appropriate admin rights. Pass _True_ for all boolean parameters to lift restrictions from a user. Returns _True_ on success.
+	 * Use this method to restrict a user in a supergroup. The bot must be an administrator in the supergroup for this to work and must have the appropriate admin rights. Pass _True_ for all permissions to lift restrictions from a user. Returns _True_ on success.
 	 */
 	abstract restrictChatMember(parameters: RestrictChatMemberParameters): Promise<boolean>;
 
@@ -5384,6 +5444,11 @@ export default abstract class AbstractApi {
 	 * Use this method to promote or demote a user in a supergroup or a channel. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Pass _False_ for all boolean parameters to demote a user. Returns _True_ on success.
 	 */
 	abstract promoteChatMember(parameters: PromoteChatMemberParameters): Promise<boolean>;
+
+	/**
+	 * Use this method to set default chat permissions for all members. The bot must be an administrator in the group or a supergroup for this to work and must have the _can_restrict_members_ admin rights. Returns _True_ on success.
+	 */
+	abstract setChatPermissions(parameters: SetChatPermissionsParameters): Promise<boolean>;
 
 	/**
 	 * Use this method to generate a new invite link for a chat; any previously generated link is revoked. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns the new invite link as _String_ on success.
@@ -5414,7 +5479,7 @@ export default abstract class AbstractApi {
 	abstract setChatTitle(parameters: SetChatTitleParameters): Promise<boolean>;
 
 	/**
-	 * Use this method to change the description of a supergroup or a channel. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns _True_ on success.
+	 * Use this method to change the description of a group, a supergroup or a channel. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns _True_ on success.
 	 */
 	abstract setChatDescription(parameters: SetChatDescriptionParameters): Promise<boolean>;
 
@@ -5515,7 +5580,7 @@ export default abstract class AbstractApi {
 	abstract deleteMessage(parameters: DeleteMessageParameters): Promise<boolean>;
 
 	/**
-	 * Use this method to send .webp stickers. On success, the sent [Message](https://core.telegram.org/bots/api#message) is returned.
+	 * Use this method to send static .WEBP or [animated](https://telegram.org/blog/animated-stickers) .TGS stickers. On success, the sent [Message](https://core.telegram.org/bots/api#message) is returned.
 	 */
 	abstract sendSticker(parameters: SendStickerParameters): Promise<Message>;
 
