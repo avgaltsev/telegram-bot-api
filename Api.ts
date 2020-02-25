@@ -1,546 +1,439 @@
-import Core from "./Core";
+import * as http from "http";
+import * as https from "https";
 
-/**
- * This object represents an incoming update.
- * At most one of the optional parameters can be present in any given update.
- */
-export interface Update {
-	/**
-	 * The update‘s unique identifier. Update identifiers start from a certain positive number and increase sequentially. This ID becomes especially handy if you’re using Webhooks, since it allows you to ignore repeated updates or to restore the correct update sequence, should they get out of order. If there are no new updates for at least a week, then identifier of the next update will be chosen randomly instead of sequentially.
-	 *
-	 * ![asd](https://core.telegram.org/file/811140015/1734/8VZFkwWXalM.97872/6127fa62d8a0bf2b3c)
-	 */
-	update_id: number;
+import {
+	Header,
+	Entity,
+	createBoundary,
+	composeBody,
+} from "./multipart";
 
-	/**
-	 * New incoming message of any kind — text, photo, sticker, etc.
-	 */
-	message?: Message;
+import AbstractApi from "./AbstractApi";
+import * as api from "./AbstractApi";
 
-	/**
-	 * New version of a message that is known to the bot and was edited
-	 */
-	edited_message?: Message;
+const URL = "api.telegram.org";
 
-	/**
-	 * New incoming channel post of any kind — text, photo, sticker, etc.
-	 */
-	channel_post?: Message;
+export type UpdateGetter = (update: api.Update) => void;
 
-	/**
-	 * New version of a channel post that is known to the bot and was edited
-	 */
-	edited_channel_post?: Message;
+export default class Api extends AbstractApi {
+	private server: http.Server;
+	private polling = false;
 
-	/**
-	 * New incoming inline query
-	 */
-	inline_query?: InlineQuery;
-
-	/**
-	 * The result of an inline query that was chosen by a user and sent to their chat partner. Please see our documentation on the feedback collecting for details on how to enable these updates for your bot.
-	 */
-	chosen_inline_result?: ChosenInlineResult;
-
-	/**
-	 * New incoming callback query
-	 */
-	callback_query?: CallbackQuery;
-
-	/**
-	 * New incoming shipping query. Only for invoices with flexible price
-	 */
-	shipping_query?: ShippingQuery;
-
-	/**
-	 * New incoming pre-checkout query. Contains full information about checkout
-	 */
-	pre_checkout_query?: PreCheckoutQuery;
-
-	/**
-	 * New poll state. Bots receive only updates about stopped polls and polls, which are sent by the bot
-	 */
-	// poll?: Poll;
-}
-
-/**
- * Contains information about the current status of a webhook.
- */
-export interface WebhookInfo {
-	/**
-	 * Webhook URL, may be empty if webhook is not set up
-	 */
-	url: string;
-
-	/**
-	 * True, if a custom certificate was provided for webhook certificate checks
-	 */
-	has_custom_certificate: boolean;
-
-	/**
-	 * Number of updates awaiting delivery
-	 */
-	pending_update_count: number;
-
-	/**
-	 * Unix time for the most recent error that happened when trying to deliver an update via webhook
-	 */
-	last_error_date?: number;
-
-	/**
-	 * Error message in human-readable format for the most recent error that happened when trying to deliver an update via webhook
-	 */
-	last_error_message?: string;
-
-	/**
-	 * Maximum allowed number of simultaneous HTTPS connections to the webhook for update delivery
-	 */
-	max_connections?: number;
-
-	/**
-	 * A list of update types the bot is subscribed to. Defaults to all update types
-	 */
-	allowed_updates?: string[];
-}
-
-export interface User {
-	/**
-	 * Unique identifier for this user or bot
-	 */
-	id: number;
-
-	/**
-	 * True, if this user is a bot
-	 */
-	is_bot: boolean;
-
-	/**
-	 * User‘s or bot’s first name
-	 */
-	first_name: string;
-
-	/**
-	 * User‘s or bot’s last name
-	 */
-	last_name?: string;
-
-	/**
-	 * User‘s or bot’s username
-	 */
-	username?: string;
-
-	/**
-	 * IETF language tag of the user's language
-	 */
-	language_code?: string;
-}
-
-export interface Chat {
-	id: number;
-	type: "private" | "group" | "supergroup" | "channel";
-	title?: string;
-	username?: string;
-	first_name?: string;
-	last_name?: string;
-	all_members_are_administrators?: boolean;
-	photo?: ChatPhoto;
-	description?: string;
-	invite_link?: string;
-}
-
-export interface Message {
-	message_id: number;
-	from?: User;
-	date: number;
-	chat: Chat;
-	forward_from?: User;
-	forward_from_chat?: Chat;
-	forward_from_message_id?: number;
-	forward_date?: number;
-	reply_to_message?: Message;
-	edit_date?: number;
-	text?: string;
-	entities?: MessageEntity[];
-	audio?: Audio;
-	document?: Document;
-	game?: Game;
-	photo?: PhotoSize[];
-	sticker?: Sticker;
-	video?: Video;
-	voice?: Voice;
-	video_note?: VideoNote;
-	new_chat_members?: User[];
-	caption?: string;
-	contact?: Contact;
-	location?: Location;
-	venue?: Venue;
-	new_chat_member?: User;
-	left_chat_member?: User;
-	new_chat_title?: string;
-	new_chat_photo?: PhotoSize[];
-	delete_chat_photo?: boolean;
-	group_chat_created?: boolean;
-	supergroup_chat_created?: boolean;
-	channel_chat_created?: boolean;
-	migrate_to_chat_id?: number;
-	migrate_from_chat_id?: number;
-	pinned_message?: Message;
-	invoice?: Invoice;
-	successful_payment?: SuccessfulPayment;
-}
-
-export interface MessageEntity {
-	type: "mention" | "hashtag" | "bot_command" | "url" | "email" | "bold" | "italic" | "code" | "pre" | "text_link" | "text_mention";
-	offset: number;
-	length: number;
-	url?: string;
-	user?: User;
-}
-
-export interface PhotoSize {
-	file_id: string;
-	width: number;
-	height: number;
-	file_size?: number;
-}
-
-export interface Audio {
-	file_id: string;
-	duration: number;
-	performer?: string;
-	title?: string;
-	mime_type?: string;
-	file_size?: number;
-}
-
-export interface Document {
-	file_id: string;
-	thumb?: PhotoSize;
-	file_name?: string;
-	mime_type?: string;
-	file_size?: number;
-}
-
-export interface Sticker {
-	file_id: string;
-	width: number;
-	height: number;
-	thumb?: PhotoSize;
-	emoji?: string;
-	file_size?: number;
-}
-
-export interface Video {
-	file_id: string;
-	width: number;
-	height: number;
-	duration: number;
-	thumb?: PhotoSize;
-	mime_type?: string;
-	file_size?: number;
-}
-
-export interface Voice {
-	file_id: string;
-	duration: number;
-	mime_type?: string;
-	file_size?: number;
-}
-
-export interface VideoNote {
-	file_id: string;
-	length: number;
-	duration: number;
-	thumb?: PhotoSize;
-	file_size?: number;
-}
-
-export interface Contact {
-	phone_number: string;
-	first_name: string;
-	last_name?: string;
-	user_id?: number;
-}
-
-export interface Location {
-	longitude: number;
-	latitude: number;
-}
-
-export interface Venue {
-	location: Location;
-	title: string;
-	address: string;
-	foursquare_id?: string;
-}
-
-export interface UserProfilePhotos {
-	total_count: number;
-	photos: PhotoSize[];
-}
-
-export interface File {
-	file_id: string;
-	file_size?: number;
-	file_path?: string;
-}
-
-export interface ReplyKeyboardMarkup {
-	keyboard: KeyboardButton[][];
-	resize_keyboard?: boolean;
-	one_time_keyboard?: boolean;
-	selective?: boolean;
-}
-
-export interface KeyboardButton {
-	text: string;
-	request_contact?: boolean;
-	request_location?: boolean;
-}
-
-export interface ReplyKeyboardRemove {
-	remove_keyboard: true;
-	selective?: boolean;
-}
-
-export interface InlineKeyboardMarkup {
-	inline_keyboard: InlineKeyboardButton[][];
-}
-
-export interface InlineKeyboardButton {
-	text: string;
-	url?: string;
-	callback_data?: string;
-	switch_inline_query?: string;
-	switch_inline_query_current_chat?: string;
-	callback_game?: CallbackGame;
-	pay?: boolean;
-}
-
-export interface CallbackQuery {
-	id: string;
-	from: User;
-	message?: Message;
-	inline_message_id?: string;
-	chat_instance: string;
-	data?: string;
-	game_short_name?: string;
-}
-
-export interface ForceReply {
-	force_reply: true;
-	selective?: boolean;
-}
-
-export interface ChatPhoto {
-	small_file_id: string;
-	big_file_id: string;
-}
-
-export interface ChatMember {
-	user: User;
-	status: string;
-	until_date?: number;
-	can_be_edited?: boolean;
-	can_change_info?: boolean;
-	can_post_messages?: boolean;
-	can_edit_messages?: boolean;
-	can_delete_messages?: boolean;
-	can_invite_users?: boolean;
-	can_restrict_members?: boolean;
-	can_pin_messages?: boolean;
-	can_promote_members?: boolean;
-	can_send_messages?: boolean;
-	can_send_media_messages?: boolean;
-	can_send_other_messages?: boolean;
-	can_add_web_page_previews?: boolean;
-}
-
-export interface ResponseParameters {
-	migrate_to_chat_id?: number;
-	retry_after?: number;
-}
-
-export interface InlineQuery {
-	id: string;
-	from: User;
-	location?: Location;
-	query: string;
-	offset: string;
-}
-
-export interface InlineQueryResult {}
-
-export interface InlineQueryResultArticle extends InlineQueryResult {}
-
-export interface ChosenInlineResult {}
-
-export interface LabeledPrice {}
-
-export interface Invoice {}
-
-export interface ShippingAddress {}
-
-export interface OrderInfo {}
-
-export interface ShippingOption {}
-
-export interface SuccessfulPayment {}
-
-export interface ShippingQuery {}
-
-export interface PreCheckoutQuery {}
-
-export interface Game {}
-
-export interface Animation {}
-
-export interface CallbackGame {}
-
-export interface GameHighScore {}
-
-export type updateListener = (update: Update) => void;
-
-export interface InputFile {
-	name?: string;
-	contentType?: string;
-	content: Buffer;
-}
-
-export interface GetUpdatesParameters {
-	offset?: number;
-	limit?: number;
-	timeout?: number;
-	allowed_updates?: string[];
-}
-
-export interface SetWebhookParameters {
-	url: string;
-	certificate?: InputFile;
-	max_connections?: number;
-	allowed_updates?: string[];
-}
-
-export interface SendMessageParameters {
-	chat_id: number | string;
-	text: string;
-	parse_mode?: "Markdown" | "HTML";
-	disable_web_page_preview?: boolean;
-	disable_notification?: boolean;
-	reply_to_message_id?: number;
-	reply_markup?: InlineKeyboardMarkup | ReplyKeyboardMarkup | ReplyKeyboardRemove | ForceReply;
-}
-
-export interface ForwardMessageParameters {}
-
-export interface SendPhotoParameters {}
-
-export interface SendAudioParameters {}
-
-export interface SendDocumentParameters {}
-
-export interface SendStickerParameters {}
-
-export interface SendVideoParameters {}
-
-export interface SendVoiceParameters {}
-
-export interface SendVideoNoteParameters {}
-
-export interface SendLocationParameters {}
-
-export interface SendVenueParameters {}
-
-export interface SendContactParameters {}
-
-export interface SendChatActionParameters {}
-
-export interface GetUserProfilePhotosParameters {}
-
-export interface GetFileParameters {}
-
-export interface KickChatMemberParameters {}
-
-export interface UnbanChatMemberParameters {}
-
-export interface RestrictChatMemberParameters {}
-
-export interface PromoteChatMemberParameters {}
-
-export interface ExportChatInviteLinkParameters {}
-
-export interface SetChatPhotoParameters {}
-
-export interface DeleteChatPhotoParameters {}
-
-export interface SetChatTitleParameters {}
-
-export interface SetChatDescriptionParameters {}
-
-export interface PinChatMessageParameters {}
-
-export interface UnpinChatMessageParameters {}
-
-export interface LeaveChatParameters {}
-
-export interface GetChatParameters {}
-
-export interface GetChatAdministratorsParameters {}
-
-export interface GetChatMembersCountParameters {}
-
-export interface GetChatMemberParameters {}
-
-export interface AnswerCallbackQueryParameters {}
-
-export interface EditMessageTextParameters {}
-
-export interface EditMessageCaptionParameters {}
-
-export interface EditMessageReplyMarkupParameters {}
-
-export interface DeleteMessageParameters {}
-
-export interface AnswerInlineQueryParameters {}
-
-export interface SendInvoiceParameters {}
-
-export interface AnswerShippingQueryParameters {}
-
-export interface AnswerPreCheckoutQueryParameters {}
-
-export interface SendGameParameters {}
-
-export interface SetGameScoreParameters {}
-
-export interface GetGameHighScoresParameters {}
-
-export default class Api extends Core {
-	public listen(port: number, url: string, updateListener: updateListener) {
-		super.listen(port, url, updateListener);
+	constructor(private token: string) {
+		super();
 	}
 
-	public getUpdates(parameters: GetUpdatesParameters): Promise<Update[]> {
+	private call(method: string, parameters: any = null): Promise<any> {
+		const hasInputFile = parameters && Object.values(parameters).some((value: api.InputFile) => value.content && Buffer.isBuffer(value.content));
+
+		let contentType: string;
+		let data: Buffer;
+
+		if (hasInputFile) {
+			const boundary = createBoundary(69);
+
+			contentType = `multipart/form-data; boundary="${boundary}"`;
+
+			const entities = Object.entries<any>(parameters).map<Entity>(([name, value]) => {
+				const contentDispositionHeader: Header = {
+					name: "content-disposition",
+					value: "form-data",
+					attributes: {
+						"name": name,
+					},
+				};
+
+				if (value.content) {
+					if (value.name) {
+						contentDispositionHeader.attributes["filename"] = value.name;
+					}
+
+					return {
+						headers: [
+							contentDispositionHeader,
+							{
+								name: "content-type",
+								value: value.contentType || "application/octet-stream",
+							},
+						],
+						body: Buffer.from(value.content),
+					};
+				} else {
+					return {
+						headers: [contentDispositionHeader],
+						body: Buffer.from(String(value)),
+					};
+				}
+			});
+
+			data = composeBody(entities, boundary);
+		} else {
+			contentType = "application/json";
+			data = parameters ? Buffer.from(JSON.stringify(parameters)) : Buffer.alloc(0);
+		}
+
+		return new Promise((resolve, reject) => {
+			const request = https.request({
+				method: "POST",
+				hostname: URL,
+				path: `/bot${this.token}/${method}`,
+				headers: {
+					"content-type": contentType,
+					"content-length": data.length,
+				},
+			});
+
+			request.on("error", (error) => {
+				reject(`Connection error: ${error.message}`);
+			});
+
+			request.on("response", (response: http.IncomingMessage) => {
+				if (response.statusCode === 200) {
+					let body = Buffer.alloc(0);
+
+					response.on("data", (chunk: Buffer) => {
+						body = Buffer.concat([body, chunk]);
+					});
+
+					response.on("end", () => {
+						const result = JSON.parse(body.toString());
+
+						if (result.ok) {
+							resolve(result.result);
+						} else {
+							reject(`API error: ${result.description}`);
+						}
+					});
+				} else {
+					reject(`Server error: ${response.statusCode} ${response.statusMessage}`);
+				}
+			});
+
+			request.write(data);
+			request.end();
+		});
+	}
+
+	private startListening(port: number, url: string, getUpdate: UpdateGetter) {
+		this.server = http.createServer();
+
+		this.server.on("request", (request: http.IncomingMessage, response: http.ServerResponse) => {
+			if (request.url === url) {
+				let body = Buffer.alloc(0);
+
+				request.on("data", (chunk: Buffer) => {
+					body = Buffer.concat([body, chunk]);
+				});
+
+				request.on("end", () => {
+					getUpdate(JSON.parse(body.toString()));
+
+					response.end();
+				});
+			}
+		});
+
+		this.server.listen(port);
+	}
+
+	private startPolling(offset: number, timeout: number, getUpdate: UpdateGetter) {
+		this.polling = true;
+
+		this.getUpdates({
+			offset,
+			timeout,
+		}).then((updates) => {
+			if (this.polling) {
+				let lastUpdateId: number;
+
+				updates.forEach((update) => {
+					lastUpdateId = update.update_id;
+
+					getUpdate(update);
+				});
+
+				this.startPolling(lastUpdateId ? lastUpdateId + 1 : offset, timeout, getUpdate);
+			}
+		});
+	}
+
+	public stopListening() {
+		if (this.server) {
+			this.server.close();
+		}
+	}
+
+	public stopPolling() {
+		this.polling = false;
+	}
+
+	public listen(port: number, url: string, getUpdate: UpdateGetter) {
+		this.stopListening();
+		this.stopPolling();
+
+		this.startListening(port, url, getUpdate);
+	}
+
+	public poll(timeout: number, getUpdate: UpdateGetter) {
+		this.stopListening();
+		this.stopPolling();
+
+		this.startPolling(0, timeout, getUpdate);
+	}
+
+	public getUpdates(parameters: api.GetUpdatesParameters): Promise<api.Update[]> {
 		return this.call("getUpdates", parameters);
 	}
 
-	public setWebhook(parameters: SetWebhookParameters): Promise<true> {
+	public setWebhook(parameters: api.SetWebhookParameters): Promise<boolean> {
 		return this.call("setWebhook", parameters);
 	}
 
-	public deleteWebhook(): Promise<true> {
+	public deleteWebhook(): Promise<boolean> {
 		return this.call("deleteWebhook");
 	}
 
-	public getWebhookInfo(): Promise<WebhookInfo> {
+	public getWebhookInfo(): Promise<api.WebhookInfo> {
 		return this.call("getWebhookInfo");
 	}
 
-	public getMe(): Promise<User> {
+	public getMe(): Promise<api.User> {
 		return this.call("getMe");
 	}
 
-	public sendMessage(parameters: SendMessageParameters): Promise<Message> {
+	public sendMessage(parameters: api.SendMessageParameters): Promise<api.Message> {
 		return this.call("sendMessage", parameters);
+	}
+
+	public forwardMessage(parameters: api.ForwardMessageParameters): Promise<api.Message> {
+		return this.call("forwardMessage", parameters);
+	}
+
+	public sendPhoto(parameters: api.SendPhotoParameters): Promise<api.Message> {
+		return this.call("sendPhoto", parameters);
+	}
+
+	public sendAudio(parameters: api.SendAudioParameters): Promise<api.Message> {
+		return this.call("sendAudio", parameters);
+	}
+
+	public sendDocument(parameters: api.SendDocumentParameters): Promise<api.Message> {
+		return this.call("sendDocument", parameters);
+	}
+
+	public sendVideo(parameters: api.SendVideoParameters): Promise<api.Message> {
+		return this.call("sendVideo", parameters);
+	}
+
+	public sendAnimation(parameters: api.SendAnimationParameters): Promise<api.Message> {
+		return this.call("sendAnimation", parameters);
+	}
+
+	public sendVoice(parameters: api.SendVoiceParameters): Promise<api.Message> {
+		return this.call("sendVoice", parameters);
+	}
+
+	public sendVideoNote(parameters: api.SendVideoNoteParameters): Promise<api.Message> {
+		return this.call("sendVideoNote", parameters);
+	}
+
+	public sendMediaGroup(parameters: api.SendMediaGroupParameters): Promise<api.Message> {
+		return this.call("sendMediaGroup", parameters);
+	}
+
+	public sendLocation(parameters: api.SendLocationParameters): Promise<api.Message> {
+		return this.call("sendLocation", parameters);
+	}
+
+	public editMessageLiveLocation(parameters: api.EditMessageLiveLocationParameters): Promise<boolean | api.Message> {
+		return this.call("editMessageLiveLocation", parameters);
+	}
+
+	public stopMessageLiveLocation(parameters: api.StopMessageLiveLocationParameters): Promise<boolean | api.Message> {
+		return this.call("stopMessageLiveLocation", parameters);
+	}
+
+	public sendVenue(parameters: api.SendVenueParameters): Promise<api.Message> {
+		return this.call("sendVenue", parameters);
+	}
+
+	public sendContact(parameters: api.SendContactParameters): Promise<api.Message> {
+		return this.call("sendContact", parameters);
+	}
+
+	public sendPoll(parameters: api.SendPollParameters): Promise<api.Message> {
+		return this.call("sendPoll", parameters);
+	}
+
+	public sendChatAction(parameters: api.SendChatActionParameters): Promise<boolean> {
+		return this.call("sendChatAction", parameters);
+	}
+
+	public getUserProfilePhotos(parameters: api.GetUserProfilePhotosParameters): Promise<api.UserProfilePhotos> {
+		return this.call("getUserProfilePhotos", parameters);
+	}
+
+	public getFile(parameters: api.GetFileParameters): Promise<api.File> {
+		return this.call("getFile", parameters);
+	}
+
+	public kickChatMember(parameters: api.KickChatMemberParameters): Promise<boolean> {
+		return this.call("kickChatMember", parameters);
+	}
+
+	public unbanChatMember(parameters: api.UnbanChatMemberParameters): Promise<boolean> {
+		return this.call("unbanChatMember", parameters);
+	}
+
+	public restrictChatMember(parameters: api.RestrictChatMemberParameters): Promise<boolean> {
+		return this.call("restrictChatMember", parameters);
+	}
+
+	public promoteChatMember(parameters: api.PromoteChatMemberParameters): Promise<boolean> {
+		return this.call("promoteChatMember", parameters);
+	}
+
+	public exportChatInviteLink(parameters: api.ExportChatInviteLinkParameters): Promise<string> {
+		return this.call("exportChatInviteLink", parameters);
+	}
+
+	public setChatPhoto(parameters: api.SetChatPhotoParameters): Promise<boolean> {
+		return this.call("setChatPhoto", parameters);
+	}
+
+	public deleteChatPhoto(parameters: api.DeleteChatPhotoParameters): Promise<boolean> {
+		return this.call("deleteChatPhoto", parameters);
+	}
+
+	public setChatTitle(parameters: api.SetChatTitleParameters): Promise<boolean> {
+		return this.call("setChatTitle", parameters);
+	}
+
+	public setChatDescription(parameters: api.SetChatDescriptionParameters): Promise<boolean> {
+		return this.call("setChatDescription", parameters);
+	}
+
+	public pinChatMessage(parameters: api.PinChatMessageParameters): Promise<boolean> {
+		return this.call("pinChatMessage", parameters);
+	}
+
+	public unpinChatMessage(parameters: api.UnpinChatMessageParameters): Promise<boolean> {
+		return this.call("unpinChatMessage", parameters);
+	}
+
+	public leaveChat(parameters: api.LeaveChatParameters): Promise<boolean> {
+		return this.call("leaveChat", parameters);
+	}
+
+	public getChat(parameters: api.GetChatParameters): Promise<api.Chat> {
+		return this.call("getChat", parameters);
+	}
+
+	public getChatAdministrators(parameters: api.GetChatAdministratorsParameters): Promise<api.ChatMember[]> {
+		return this.call("getChatAdministrators", parameters);
+	}
+
+	public getChatMembersCount(parameters: api.GetChatMembersCountParameters): Promise<number> {
+		return this.call("getChatMembersCount", parameters);
+	}
+
+	public getChatMember(parameters: api.GetChatMemberParameters): Promise<api.ChatMember> {
+		return this.call("getChatMember", parameters);
+	}
+
+	public setChatStickerSet(parameters: api.SetChatStickerSetParameters): Promise<boolean> {
+		return this.call("setChatStickerSet", parameters);
+	}
+
+	public deleteChatStickerSet(parameters: api.DeleteChatStickerSetParameters): Promise<boolean> {
+		return this.call("deleteChatStickerSet", parameters);
+	}
+
+	public answerCallbackQuery(parameters: api.AnswerCallbackQueryParameters): Promise<boolean> {
+		return this.call("answerCallbackQuery", parameters);
+	}
+
+	public editMessageText(parameters: api.EditMessageTextParameters): Promise<boolean | api.Message> {
+		return this.call("editMessageText", parameters);
+	}
+
+	public editMessageCaption(parameters: api.EditMessageCaptionParameters): Promise<boolean | api.Message> {
+		return this.call("editMessageCaption", parameters);
+	}
+
+	public editMessageMedia(parameters: api.EditMessageMediaParameters): Promise<boolean | api.Message> {
+		return this.call("editMessageMedia", parameters);
+	}
+
+	public editMessageReplyMarkup(parameters: api.EditMessageReplyMarkupParameters): Promise<boolean | api.Message> {
+		return this.call("editMessageReplyMarkup", parameters);
+	}
+
+	public stopPoll(parameters: api.StopPollParameters): Promise<api.Poll> {
+		return this.call("stopPoll", parameters);
+	}
+
+	public deleteMessage(parameters: api.DeleteMessageParameters): Promise<boolean> {
+		return this.call("deleteMessage", parameters);
+	}
+
+	public sendSticker(parameters: api.SendStickerParameters): Promise<api.Message> {
+		return this.call("sendSticker", parameters);
+	}
+
+	public getStickerSet(parameters: api.GetStickerSetParameters): Promise<api.StickerSet> {
+		return this.call("getStickerSet", parameters);
+	}
+
+	public uploadStickerFile(parameters: api.UploadStickerFileParameters): Promise<api.File> {
+		return this.call("uploadStickerFile", parameters);
+	}
+
+	public createNewStickerSet(parameters: api.CreateNewStickerSetParameters): Promise<boolean> {
+		return this.call("createNewStickerSet", parameters);
+	}
+
+	public addStickerToSet(parameters: api.AddStickerToSetParameters): Promise<boolean> {
+		return this.call("addStickerToSet", parameters);
+	}
+
+	public setStickerPositionInSet(parameters: api.SetStickerPositionInSetParameters): Promise<boolean> {
+		return this.call("setStickerPositionInSet", parameters);
+	}
+
+	public deleteStickerFromSet(parameters: api.DeleteStickerFromSetParameters): Promise<boolean> {
+		return this.call("deleteStickerFromSet", parameters);
+	}
+
+	public answerInlineQuery(parameters: api.AnswerInlineQueryParameters): Promise<boolean> {
+		return this.call("answerInlineQuery", parameters);
+	}
+
+	public sendInvoice(parameters: api.SendInvoiceParameters): Promise<api.Message> {
+		return this.call("sendInvoice", parameters);
+	}
+
+	public answerShippingQuery(parameters: api.AnswerShippingQueryParameters): Promise<boolean> {
+		return this.call("answerShippingQuery", parameters);
+	}
+
+	public answerPreCheckoutQuery(parameters: api.AnswerPreCheckoutQueryParameters): Promise<boolean> {
+		return this.call("answerPreCheckoutQuery", parameters);
+	}
+
+	public setPassportDataErrors(parameters: api.SetPassportDataErrorsParameters): Promise<boolean> {
+		return this.call("setPassportDataErrors", parameters);
+	}
+
+	public sendGame(parameters: api.SendGameParameters): Promise<api.Message> {
+		return this.call("sendGame", parameters);
+	}
+
+	public setGameScore(parameters: api.SetGameScoreParameters): Promise<boolean | api.Message> {
+		return this.call("setGameScore", parameters);
+	}
+
+	public getGameHighScores(parameters: api.GetGameHighScoresParameters): Promise<api.GameHighScore[]> {
+		return this.call("getGameHighScores", parameters);
 	}
 }

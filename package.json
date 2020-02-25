@@ -1,14 +1,33 @@
 {
 	"name": "@somethings/telegram-bot-api",
-	"description": "",
 	"version": "0.0.0",
+	"description": "Comprehensive Telegram Bot API written in TypeScript",
+	"keywords": [
+		"telegram",
+		"bot",
+		"api"
+	],
+	"author": {
+		"name": "Anton Galtsev",
+		"email": "avgaltsev@gmail.com"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/avgaltsev/telegram-bot-api"
+	},
+	"license": "MIT",
+	"main": "index.js",
 	"scripts": {
-		"lint": "tslint -e \"./**/*.d.ts\" \"./**/*.ts\"",
-		"build": "tsc",
-		"prepare": "npm run lint && npm run build"
+		"lint": "tslint -e \"./**/*.d.ts\" -e \"./AbstractApi.ts\" \"./**/*.ts\"",
+		"build": "tsc --skipLibCheck",
+		"prepare": "npm run lint && npm run build",
+		"download": "node ./sync/download.js > ./sync/api.html",
+		"parse": "node ./sync/parse.js ./sync/api.html ./sync/api.json > ./AbstractApi.ts"
 	},
 	"devDependencies": {
 		"@types/node": "^12.0.10",
+		"@types/puppeteer": "^1.12.4",
+		"puppeteer": "^1.18.1",
 		"tslint": "^5.18.0",
 		"typescript": "^3.5.2"
 	}
