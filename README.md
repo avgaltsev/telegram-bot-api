@@ -1,7 +1,7 @@
 Telegram Bot API
 ================
 
-This is a comprehensive Telegram Bot API written in TypeScript. It provides a full up-to-date list of methods and types defined by the [official documentation](https://core.telegram.org/bots/api).
+This is an accurate and comprehensive Telegram Bot API written in TypeScript. It provides a full up-to-date list of methods and types defined by the [official documentation](https://core.telegram.org/bots/api).
 
 Using the API
 -------------
@@ -48,7 +48,7 @@ How to update the API
 2. Run `npm run download` to download a copy of the official documentation page and save it to `sync/api.html` file;
 3. Inspect the diff of `sync/api.html` to determine if the API needs to be updated:
 	- If there are only changes in existing types or methods just run `npm run parse` to read documentation from `sync/api.html` and `sync/api.json` and generate `AbstractApi.ts` with actual interfaces fields and descriptions;
-	- If there are new types or methods or any changes affecting manually managed information update `sync/api.json` accordingly and run `npm run parse`;
+	- If there are new types or methods (new H4 tags) or any changes affecting manually managed information update `sync/api.json` accordingly and run `npm run parse`;
 4. Inspect changes in `AbstractApi.ts`;
 5. Check `Api.ts` for possible TypeScript errors as it derives from generated `AbstractApi.ts` and possibly add new methods here;
 6. Commit everything.

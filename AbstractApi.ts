@@ -58,6 +58,11 @@ export interface Update {
 	 * _Optional_. New poll state. Bots receive only updates about stopped polls and polls, which are sent by the bot
 	 */
 	poll?: Poll;
+
+	/**
+	 * _Optional_. A user changed their answer in a non-anonymous poll. Bots receive new votes only in polls that were sent by the bot itself.
+	 */
+	poll_answer?: PollAnswer;
 }
 
 /**
@@ -133,6 +138,21 @@ export interface User {
 	 * _Optional_. [IETF language tag](https://en.wikipedia.org/wiki/IETF_language_tag) of the user's language
 	 */
 	language_code?: string;
+
+	/**
+	 * _Optional_. True, if the bot can be invited to groups. Returned only in [getMe](https://core.telegram.org/bots/api#getme).
+	 */
+	can_join_groups?: boolean;
+
+	/**
+	 * _Optional_. True, if [privacy mode](https://core.telegram.org/bots#privacy-mode) is disabled for the bot. Returned only in [getMe](https://core.telegram.org/bots/api#getme).
+	 */
+	can_read_all_group_messages?: boolean;
+
+	/**
+	 * _Optional_. True, if the bot supports inline queries. Returned only in [getMe](https://core.telegram.org/bots/api#getme).
+	 */
+	supports_inline_queries?: boolean;
 }
 
 /**
@@ -193,6 +213,11 @@ export interface Chat {
 	 * _Optional_. Default chat member permissions, for groups and supergroups. Returned only in [getChat](https://core.telegram.org/bots/api#getchat).
 	 */
 	permissions?: ChatPermissions;
+
+	/**
+	 * _Optional_. For supergroups, the minimum allowed delay between consecutive messages sent by each unpriviledged user. Returned only in [getChat](https://core.telegram.org/bots/api#getchat).
+	 */
+	slow_mode_delay?: number;
 
 	/**
 	 * _Optional_. For supergroups, name of group sticker set. Returned only in [getChat](https://core.telegram.org/bots/api#getchat).
@@ -280,7 +305,7 @@ export interface Message {
 	author_signature?: string;
 
 	/**
-	 * _Optional_. For text messages, the actual UTF-8 text of the message, 0-4096 characters.
+	 * _Optional_. For text messages, the actual UTF-8 text of the message, 0-4096 characters
 	 */
 	text?: string;
 
@@ -450,7 +475,7 @@ export interface Message {
  */
 export interface MessageEntity {
 	/**
-	 * Type of the entity. Can be _mention_ (`@username`), _hashtag_, _cashtag_, _bot_command_, _url_, _email_, _phone_number_, _bold_ (bold text), _italic_ (italic text), _code_ (monowidth string), _pre_ (monowidth block), _text_link_ (for clickable text URLs), _text_mention_ (for users [without usernames](https://telegram.org/blog/edit#new-mentions))
+	 * Type of the entity. Can be “mention” (`@username`), “hashtag” (`#hashtag`), “cashtag” (`$USD`), “bot_command” (`/start@jobs_bot`), “url” (`https://telegram.org`), “email” (`do-not-reply@telegram.org`), “phone_number” (`+1-212-555-0123`), “bold” (**bold text**), “italic” (_italic text_), “underline” (underlined text), “strikethrough” (strikethrough text), “code” (monowidth string), “pre” (monowidth block), “text_link” (for clickable text URLs), “text_mention” (for users [without usernames](https://telegram.org/blog/edit#new-mentions))
 	 */
 	type: "mention" | "hashtag" | "cashtag" | "bot_command" | "url" | "email" | "phone_number" | "bold" | "italic" | "code" | "pre" | "text_link" | "text_mention";
 
@@ -473,6 +498,11 @@ export interface MessageEntity {
 	 * _Optional_. For “text_mention” only, the mentioned user
 	 */
 	user?: User;
+
+	/**
+	 * _Optional_. For “pre” only, the programming language of the entity text
+	 */
+	language?: string;
 }
 
 /**
@@ -480,9 +510,14 @@ export interface MessageEntity {
  */
 export interface PhotoSize {
 	/**
-	 * Identifier for this file
+	 * Identifier for this file, which can be used to download or reuse the file
 	 */
 	file_id: string;
+
+	/**
+	 * Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
+	 */
+	file_unique_id: string;
 
 	/**
 	 * Photo width
@@ -505,9 +540,14 @@ export interface PhotoSize {
  */
 export interface Audio {
 	/**
-	 * Identifier for this file
+	 * Identifier for this file, which can be used to download or reuse the file
 	 */
 	file_id: string;
+
+	/**
+	 * Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
+	 */
+	file_unique_id: string;
 
 	/**
 	 * Duration of the audio in seconds as defined by sender
@@ -545,9 +585,14 @@ export interface Audio {
  */
 export interface Document {
 	/**
-	 * Identifier for this file
+	 * Identifier for this file, which can be used to download or reuse the file
 	 */
 	file_id: string;
+
+	/**
+	 * Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
+	 */
+	file_unique_id: string;
 
 	/**
 	 * _Optional_. Document thumbnail as defined by sender
@@ -575,9 +620,14 @@ export interface Document {
  */
 export interface Video {
 	/**
-	 * Identifier for this file
+	 * Identifier for this file, which can be used to download or reuse the file
 	 */
 	file_id: string;
+
+	/**
+	 * Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
+	 */
+	file_unique_id: string;
 
 	/**
 	 * Video width as defined by sender
@@ -615,9 +665,14 @@ export interface Video {
  */
 export interface Animation {
 	/**
-	 * Identifier for this file
+	 * Identifier for this file, which can be used to download or reuse the file
 	 */
 	file_id: string;
+
+	/**
+	 * Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
+	 */
+	file_unique_id: string;
 
 	/**
 	 * Video width as defined by sender
@@ -660,9 +715,14 @@ export interface Animation {
  */
 export interface Voice {
 	/**
-	 * Identifier for this file
+	 * Identifier for this file, which can be used to download or reuse the file
 	 */
 	file_id: string;
+
+	/**
+	 * Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
+	 */
+	file_unique_id: string;
 
 	/**
 	 * Duration of the audio in seconds as defined by sender
@@ -685,9 +745,14 @@ export interface Voice {
  */
 export interface VideoNote {
 	/**
-	 * Identifier for this file
+	 * Identifier for this file, which can be used to download or reuse the file
 	 */
 	file_id: string;
+
+	/**
+	 * Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
+	 */
+	file_unique_id: string;
 
 	/**
 	 * Video width and height (diameter of the video message) as defined by sender
@@ -801,6 +866,26 @@ export interface PollOption {
 }
 
 /**
+ * This object represents an answer of a user in a non-anonymous poll.
+ */
+export interface PollAnswer {
+	/**
+	 * Unique poll identifier
+	 */
+	poll_id: string;
+
+	/**
+	 * The user, who changed the answer to the poll
+	 */
+	user: User;
+
+	/**
+	 * 0-based identifiers of answer options, chosen by the user. May be empty if the user retracted their vote.
+	 */
+	option_ids: number[];
+}
+
+/**
  * This object contains information about a poll.
  */
 export interface Poll {
@@ -820,9 +905,34 @@ export interface Poll {
 	options: PollOption[];
 
 	/**
+	 * Total number of users that voted in the poll
+	 */
+	total_voter_count: number;
+
+	/**
 	 * True, if the poll is closed
 	 */
 	is_closed: boolean;
+
+	/**
+	 * True, if the poll is anonymous
+	 */
+	is_anonymous: boolean;
+
+	/**
+	 * Poll type, currently can be “regular” or “quiz”
+	 */
+	type: string;
+
+	/**
+	 * True, if the poll allows multiple answers
+	 */
+	allows_multiple_answers: boolean;
+
+	/**
+	 * _Optional_. 0-based identifier of the correct answer option. Available only for polls in the quiz mode, which are closed, or was sent (not forwarded) by the bot or to the private chat with the bot.
+	 */
+	correct_option_id?: number;
 }
 
 /**
@@ -847,9 +957,14 @@ export interface UserProfilePhotos {
  */
 export interface File {
 	/**
-	 * Identifier for this file
+	 * Identifier for this file, which can be used to download or reuse the file
 	 */
 	file_id: string;
+
+	/**
+	 * Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
+	 */
+	file_unique_id: string;
 
 	/**
 	 * _Optional_. File size, if known
@@ -890,9 +1005,11 @@ export interface ReplyKeyboardMarkup {
 }
 
 /**
- * This object represents one button of the reply keyboard. For simple text buttons _String_ can be used instead of this object to specify text of the button. Optional fields are mutually exclusive.
+ * This object represents one button of the reply keyboard. For simple text buttons _String_ can be used instead of this object to specify text of the button. Optional fields _request_contact_, _request_location_, and _request_poll_ are mutually exclusive.
  *
- * **Note:** _request_contact_ and _request_location_ options will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.
+ * **Note:** _request_contact_ and _request_location_ options will only work in Telegram versions released after 9 April, 2016. Older clients will display _unsupported message_.
+ *
+ * **Note:** _request_poll_ option will only work in Telegram versions released after 23 January, 2020. Older clients will display _unsupported message_.
  */
 export interface KeyboardButton {
 	/**
@@ -909,6 +1026,21 @@ export interface KeyboardButton {
 	 * _Optional_. If _True_, the user's current location will be sent when the button is pressed. Available in private chats only
 	 */
 	request_location?: boolean;
+
+	/**
+	 * _Optional_. If specified, the user will be asked to create a poll and send it to the bot when the button is pressed. Available in private chats only
+	 */
+	request_poll?: KeyboardButtonPollType;
+}
+
+/**
+ * This object represents type of a poll, which is allowed to be created and sent when the corresponding button is pressed.
+ */
+export interface KeyboardButtonPollType {
+	/**
+	 * _Optional_. If _quiz_ is passed, the user will be allowed to create only polls in the quiz mode. If _regular_ is passed, only regular polls will be allowed. Otherwise, the user will be allowed to create a poll of any type.
+	 */
+	type?: string;
 }
 
 /**
@@ -1098,9 +1230,19 @@ export interface ChatPhoto {
 	small_file_id: string;
 
 	/**
+	 * Unique file identifier of small (160x160) chat photo, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
+	 */
+	small_file_unique_id: string;
+
+	/**
 	 * File identifier of big (640x640) chat photo. This file_id can be used only for photo download and only for as long as the photo is not changed.
 	 */
 	big_file_id: string;
+
+	/**
+	 * Unique file identifier of big (640x640) chat photo, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
+	 */
+	big_file_unique_id: string;
 }
 
 /**
@@ -1116,6 +1258,11 @@ export interface ChatMember {
 	 * The member's status in the chat. Can be “creator”, “administrator”, “member”, “restricted”, “left” or “kicked”
 	 */
 	status: "creator" | "administrator" | "member" | "restricted" | "left" | "kicked";
+
+	/**
+	 * _Optional_. Owner and administrators only. Custom title for this user
+	 */
+	custom_title?: string;
 
 	/**
 	 * _Optional_. Restricted and kicked only. Date when restrictions will be lifted for this user; unix time
@@ -1284,7 +1431,7 @@ export interface InputMediaPhoto {
 	media: string;
 
 	/**
-	 * _Optional_. Caption of the photo to be sent, 0-1024 characters
+	 * _Optional_. Caption of the photo to be sent, 0-1024 characters after entities parsing
 	 */
 	caption?: string;
 
@@ -1314,7 +1461,7 @@ export interface InputMediaVideo {
 	thumb?: InputFile | string;
 
 	/**
-	 * _Optional_. Caption of the video to be sent, 0-1024 characters
+	 * _Optional_. Caption of the video to be sent, 0-1024 characters after entities parsing
 	 */
 	caption?: string;
 
@@ -1364,7 +1511,7 @@ export interface InputMediaAnimation {
 	thumb?: InputFile | string;
 
 	/**
-	 * _Optional_. Caption of the animation to be sent, 0-1024 characters
+	 * _Optional_. Caption of the animation to be sent, 0-1024 characters after entities parsing
 	 */
 	caption?: string;
 
@@ -1409,7 +1556,7 @@ export interface InputMediaAudio {
 	thumb?: InputFile | string;
 
 	/**
-	 * _Optional_. Caption of the audio to be sent, 0-1024 characters
+	 * _Optional_. Caption of the audio to be sent, 0-1024 characters after entities parsing
 	 */
 	caption?: string;
 
@@ -1454,7 +1601,7 @@ export interface InputMediaDocument {
 	thumb?: InputFile | string;
 
 	/**
-	 * _Optional_. Caption of the document to be sent, 0-1024 characters
+	 * _Optional_. Caption of the document to be sent, 0-1024 characters after entities parsing
 	 */
 	caption?: string;
 
@@ -1480,9 +1627,14 @@ export interface InputFile {
  */
 export interface Sticker {
 	/**
-	 * Identifier for this file
+	 * Identifier for this file, which can be used to download or reuse the file
 	 */
 	file_id: string;
+
+	/**
+	 * Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
+	 */
+	file_unique_id: string;
 
 	/**
 	 * Sticker width
@@ -1600,7 +1752,7 @@ export interface InlineQuery {
 	location?: Location;
 
 	/**
-	 * Text of the query (up to 512 characters)
+	 * Text of the query (up to 256 characters)
 	 */
 	query: string;
 
@@ -1741,7 +1893,7 @@ export interface InlineQueryResultPhoto {
 	description?: string;
 
 	/**
-	 * _Optional_. Caption of the photo to be sent, 0-1024 characters
+	 * _Optional_. Caption of the photo to be sent, 0-1024 characters after entities parsing
 	 */
 	caption?: string;
 
@@ -1806,7 +1958,7 @@ export interface InlineQueryResultGif {
 	title?: string;
 
 	/**
-	 * _Optional_. Caption of the GIF file to be sent, 0-1024 characters
+	 * _Optional_. Caption of the GIF file to be sent, 0-1024 characters after entities parsing
 	 */
 	caption?: string;
 
@@ -1871,7 +2023,7 @@ export interface InlineQueryResultMpeg4Gif {
 	title?: string;
 
 	/**
-	 * _Optional_. Caption of the MPEG-4 file to be sent, 0-1024 characters
+	 * _Optional_. Caption of the MPEG-4 file to be sent, 0-1024 characters after entities parsing
 	 */
 	caption?: string;
 
@@ -1928,7 +2080,7 @@ export interface InlineQueryResultVideo {
 	title: string;
 
 	/**
-	 * _Optional_. Caption of the video to be sent, 0-1024 characters
+	 * _Optional_. Caption of the video to be sent, 0-1024 characters after entities parsing
 	 */
 	caption?: string;
 
@@ -1969,7 +2121,7 @@ export interface InlineQueryResultVideo {
 }
 
 /**
- * Represents a link to an mp3 audio file. By default, this audio file will be sent by the user. Alternatively, you can use _input_message_content_ to send a message with the specified content instead of the audio.
+ * Represents a link to an MP3 audio file. By default, this audio file will be sent by the user. Alternatively, you can use _input_message_content_ to send a message with the specified content instead of the audio.
  *
  * **Note:** This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.
  */
@@ -1995,7 +2147,7 @@ export interface InlineQueryResultAudio {
 	title: string;
 
 	/**
-	 * _Optional_. Caption, 0-1024 characters
+	 * _Optional_. Caption, 0-1024 characters after entities parsing
 	 */
 	caption?: string;
 
@@ -2052,7 +2204,7 @@ export interface InlineQueryResultVoice {
 	title: string;
 
 	/**
-	 * _Optional_. Caption, 0-1024 characters
+	 * _Optional_. Caption, 0-1024 characters after entities parsing
 	 */
 	caption?: string;
 
@@ -2099,7 +2251,7 @@ export interface InlineQueryResultDocument {
 	title: string;
 
 	/**
-	 * _Optional_. Caption of the document to be sent, 0-1024 characters
+	 * _Optional_. Caption of the document to be sent, 0-1024 characters after entities parsing
 	 */
 	caption?: string;
 
@@ -2402,7 +2554,7 @@ export interface InlineQueryResultCachedPhoto {
 	description?: string;
 
 	/**
-	 * _Optional_. Caption of the photo to be sent, 0-1024 characters
+	 * _Optional_. Caption of the photo to be sent, 0-1024 characters after entities parsing
 	 */
 	caption?: string;
 
@@ -2447,7 +2599,7 @@ export interface InlineQueryResultCachedGif {
 	title?: string;
 
 	/**
-	 * _Optional_. Caption of the GIF file to be sent, 0-1024 characters
+	 * _Optional_. Caption of the GIF file to be sent, 0-1024 characters after entities parsing
 	 */
 	caption?: string;
 
@@ -2492,7 +2644,7 @@ export interface InlineQueryResultCachedMpeg4Gif {
 	title?: string;
 
 	/**
-	 * _Optional_. Caption of the MPEG-4 file to be sent, 0-1024 characters
+	 * _Optional_. Caption of the MPEG-4 file to be sent, 0-1024 characters after entities parsing
 	 */
 	caption?: string;
 
@@ -2576,7 +2728,7 @@ export interface InlineQueryResultCachedDocument {
 	description?: string;
 
 	/**
-	 * _Optional_. Caption of the document to be sent, 0-1024 characters
+	 * _Optional_. Caption of the document to be sent, 0-1024 characters after entities parsing
 	 */
 	caption?: string;
 
@@ -2626,7 +2778,7 @@ export interface InlineQueryResultCachedVideo {
 	description?: string;
 
 	/**
-	 * _Optional_. Caption of the video to be sent, 0-1024 characters
+	 * _Optional_. Caption of the video to be sent, 0-1024 characters after entities parsing
 	 */
 	caption?: string;
 
@@ -2673,7 +2825,7 @@ export interface InlineQueryResultCachedVoice {
 	title: string;
 
 	/**
-	 * _Optional_. Caption, 0-1024 characters
+	 * _Optional_. Caption, 0-1024 characters after entities parsing
 	 */
 	caption?: string;
 
@@ -2694,7 +2846,7 @@ export interface InlineQueryResultCachedVoice {
 }
 
 /**
- * Represents a link to an mp3 audio file stored on the Telegram servers. By default, this audio file will be sent by the user. Alternatively, you can use _input_message_content_ to send a message with the specified content instead of the audio.
+ * Represents a link to an MP3 audio file stored on the Telegram servers. By default, this audio file will be sent by the user. Alternatively, you can use _input_message_content_ to send a message with the specified content instead of the audio.
  *
  * **Note:** This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.
  */
@@ -2715,7 +2867,7 @@ export interface InlineQueryResultCachedAudio {
 	audio_file_id: string;
 
 	/**
-	 * _Optional_. Caption, 0-1024 characters
+	 * _Optional_. Caption, 0-1024 characters after entities parsing
 	 */
 	caption?: string;
 
@@ -3127,9 +3279,14 @@ export interface PassportData {
  */
 export interface PassportFile {
 	/**
-	 * Identifier for this file
+	 * Identifier for this file, which can be used to download or reuse the file
 	 */
 	file_id: string;
+
+	/**
+	 * Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
+	 */
+	file_unique_id: string;
 
 	/**
 	 * File size
@@ -3543,7 +3700,7 @@ export interface GetUpdatesParameters {
 	timeout?: number;
 
 	/**
-	 * List the types of updates you want your bot to receive. For example, specify [“message”, “edited_channel_post”, “callback_query”] to only receive updates of these types. See [Update](https://core.telegram.org/bots/api#update) for a complete list of available update types. Specify an empty list to receive all updates regardless of type (default). If not specified, the previous setting will be used.
+	 * A JSON-serialized list of the update types you want your bot to receive. For example, specify [“message”, “edited_channel_post”, “callback_query”] to only receive updates of these types. See [Update](https://core.telegram.org/bots/api#update) for a complete list of available update types. Specify an empty list to receive all updates regardless of type (default). If not specified, the previous setting will be used.
 	 *
 	 * Please note that this parameter doesn't affect updates created before the call to the getUpdates, so unwanted updates may be received for a short period of time.
 	 */
@@ -3570,7 +3727,7 @@ export interface SetWebhookParameters {
 	max_connections?: number;
 
 	/**
-	 * List the types of updates you want your bot to receive. For example, specify [“message”, “edited_channel_post”, “callback_query”] to only receive updates of these types. See [Update](https://core.telegram.org/bots/api#update) for a complete list of available update types. Specify an empty list to receive all updates regardless of type (default). If not specified, the previous setting will be used.
+	 * A JSON-serialized list of the update types you want your bot to receive. For example, specify [“message”, “edited_channel_post”, “callback_query”] to only receive updates of these types. See [Update](https://core.telegram.org/bots/api#update) for a complete list of available update types. Specify an empty list to receive all updates regardless of type (default). If not specified, the previous setting will be used.
 	 *
 	 * Please note that this parameter doesn't affect updates created before the call to the setWebhook, so unwanted updates may be received for a short period of time.
 	 */
@@ -3587,7 +3744,7 @@ export interface SendMessageParameters {
 	chat_id: number | string;
 
 	/**
-	 * Text of the message to be sent
+	 * Text of the message to be sent, 1-4096 characters after entities parsing
 	 */
 	text: string;
 
@@ -3657,7 +3814,7 @@ export interface SendPhotoParameters {
 	photo: InputFile | string;
 
 	/**
-	 * Photo caption (may also be used when resending photos by _file_id_), 0-1024 characters
+	 * Photo caption (may also be used when resending photos by _file_id_), 0-1024 characters after entities parsing
 	 */
 	caption?: string;
 
@@ -3697,7 +3854,7 @@ export interface SendAudioParameters {
 	audio: InputFile | string;
 
 	/**
-	 * Audio caption, 0-1024 characters
+	 * Audio caption, 0-1024 characters after entities parsing
 	 */
 	caption?: string;
 
@@ -3762,7 +3919,7 @@ export interface SendDocumentParameters {
 	thumb?: InputFile | string;
 
 	/**
-	 * Document caption (may also be used when resending documents by _file_id_), 0-1024 characters
+	 * Document caption (may also be used when resending documents by _file_id_), 0-1024 characters after entities parsing
 	 */
 	caption?: string;
 
@@ -3822,7 +3979,7 @@ export interface SendVideoParameters {
 	thumb?: InputFile | string;
 
 	/**
-	 * Video caption (may also be used when resending videos by _file_id_), 0-1024 characters
+	 * Video caption (may also be used when resending videos by _file_id_), 0-1024 characters after entities parsing
 	 */
 	caption?: string;
 
@@ -3887,7 +4044,7 @@ export interface SendAnimationParameters {
 	thumb?: InputFile | string;
 
 	/**
-	 * Animation caption (may also be used when resending animation by _file_id_), 0-1024 characters
+	 * Animation caption (may also be used when resending animation by _file_id_), 0-1024 characters after entities parsing
 	 */
 	caption?: string;
 
@@ -3927,7 +4084,7 @@ export interface SendVoiceParameters {
 	voice: InputFile | string;
 
 	/**
-	 * Voice message caption, 0-1024 characters
+	 * Voice message caption, 0-1024 characters after entities parsing
 	 */
 	caption?: string;
 
@@ -4232,7 +4389,7 @@ export interface SendContactParameters {
  */
 export interface SendPollParameters {
 	/**
-	 * Unique identifier for the target chat or username of the target channel (in the format `@channelusername`). A native poll can't be sent to a private chat.
+	 * Unique identifier for the target chat or username of the target channel (in the format `@channelusername`)
 	 */
 	chat_id: number | string;
 
@@ -4242,9 +4399,34 @@ export interface SendPollParameters {
 	question: string;
 
 	/**
-	 * List of answer options, 2-10 strings 1-100 characters each
+	 * A JSON-serialized list of answer options, 2-10 strings 1-100 characters each
 	 */
 	options: string[];
+
+	/**
+	 * True, if the poll needs to be anonymous, defaults to _True_
+	 */
+	is_anonymous?: boolean;
+
+	/**
+	 * Poll type, “quiz” or “regular”, defaults to “regular”
+	 */
+	type?: string;
+
+	/**
+	 * True, if the poll allows multiple answers, ignored for polls in quiz mode, defaults to _False_
+	 */
+	allows_multiple_answers?: boolean;
+
+	/**
+	 * 0-based identifier of the correct answer option, required for polls in quiz mode
+	 */
+	correct_option_id?: number;
+
+	/**
+	 * Pass _True_, if the poll needs to be immediately closed. This can be useful for poll preview.
+	 */
+	is_closed?: boolean;
 
 	/**
 	 * Sends the message [silently](https://telegram.org/blog/channels-2-0#silent-messages). Users will receive a notification with no sound.
@@ -4420,6 +4602,26 @@ export interface PromoteChatMemberParameters {
 	 * Pass True, if the administrator can add new administrators with a subset of his own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by him)
 	 */
 	can_promote_members?: boolean;
+}
+
+/**
+ * `setChatAdministratorCustomTitle` parameters
+ */
+export interface SetChatAdministratorCustomTitleParameters {
+	/**
+	 * Unique identifier for the target chat or username of the target supergroup (in the format `@supergroupusername`)
+	 */
+	chat_id: number | string;
+
+	/**
+	 * Unique identifier of the target user
+	 */
+	user_id: number;
+
+	/**
+	 * New custom title for the administrator; 0-16 characters, emoji are not allowed
+	 */
+	custom_title: string;
 }
 
 /**
@@ -4664,7 +4866,7 @@ export interface EditMessageTextParameters {
 	inline_message_id?: string;
 
 	/**
-	 * New text of the message
+	 * New text of the message, 1-4096 characters after entities parsing
 	 */
 	text: string;
 
@@ -4704,7 +4906,7 @@ export interface EditMessageCaptionParameters {
 	inline_message_id?: string;
 
 	/**
-	 * New caption of the message
+	 * New caption of the message, 0-1024 characters after entities parsing
 	 */
 	caption?: string;
 
@@ -5041,7 +5243,7 @@ export interface SendInvoiceParameters {
 	currency: string;
 
 	/**
-	 * Price breakdown, a list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.)
+	 * Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.)
 	 */
 	prices: LabeledPrice[];
 
@@ -5336,7 +5538,7 @@ export default abstract class AbstractApi {
 	abstract sendPhoto(parameters: SendPhotoParameters): Promise<Message>;
 
 	/**
-	 * Use this method to send audio files, if you want Telegram clients to display them in the music player. Your audio must be in the .mp3 format. On success, the sent [Message](https://core.telegram.org/bots/api#message) is returned. Bots can currently send audio files of up to 50 MB in size, this limit may be changed in the future.
+	 * Use this method to send audio files, if you want Telegram clients to display them in the music player. Your audio must be in the .MP3 or .M4A format. On success, the sent [Message](https://core.telegram.org/bots/api#message) is returned. Bots can currently send audio files of up to 50 MB in size, this limit may be changed in the future.
 	 *
 	 * For sending voice messages, use the [sendVoice](https://core.telegram.org/bots/api#sendvoice) method instead.
 	 */
@@ -5398,7 +5600,7 @@ export default abstract class AbstractApi {
 	abstract sendContact(parameters: SendContactParameters): Promise<Message>;
 
 	/**
-	 * Use this method to send a native poll. A native poll can't be sent to a private chat. On success, the sent [Message](https://core.telegram.org/bots/api#message) is returned.
+	 * Use this method to send a native poll. On success, the sent [Message](https://core.telegram.org/bots/api#message) is returned.
 	 */
 	abstract sendPoll(parameters: SendPollParameters): Promise<Message>;
 
@@ -5442,6 +5644,11 @@ export default abstract class AbstractApi {
 	 * Use this method to promote or demote a user in a supergroup or a channel. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Pass _False_ for all boolean parameters to demote a user. Returns _True_ on success.
 	 */
 	abstract promoteChatMember(parameters: PromoteChatMemberParameters): Promise<boolean>;
+
+	/**
+	 * Use this method to set a custom title for an administrator in a supergroup promoted by the bot. Returns _True_ on success.
+	 */
+	abstract setChatAdministratorCustomTitle(parameters: SetChatAdministratorCustomTitleParameters): Promise<boolean>;
 
 	/**
 	 * Use this method to set default chat permissions for all members. The bot must be an administrator in the group or a supergroup for this to work and must have the _can_restrict_members_ admin rights. Returns _True_ on success.
