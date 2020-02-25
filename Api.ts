@@ -293,6 +293,10 @@ export default class Api extends AbstractApi {
 		return this.call("promoteChatMember", parameters);
 	}
 
+	public setChatPermissions(parameters: api.SetChatPermissionsParameters): Promise<boolean> {
+		return this.call("setChatPermissions", parameters);
+	}
+
 	public exportChatInviteLink(parameters: api.ExportChatInviteLinkParameters): Promise<string> {
 		return this.call("exportChatInviteLink", parameters);
 	}
