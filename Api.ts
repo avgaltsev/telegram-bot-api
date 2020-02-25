@@ -1,33 +1,137 @@
 import Core from "./Core";
 
+/**
+ * This object represents an incoming update.
+ * At most one of the optional parameters can be present in any given update.
+ */
 export interface Update {
+	/**
+	 * The update‘s unique identifier. Update identifiers start from a certain positive number and increase sequentially. This ID becomes especially handy if you’re using Webhooks, since it allows you to ignore repeated updates or to restore the correct update sequence, should they get out of order. If there are no new updates for at least a week, then identifier of the next update will be chosen randomly instead of sequentially.
+	 *
+	 * ![asd](https://core.telegram.org/file/811140015/1734/8VZFkwWXalM.97872/6127fa62d8a0bf2b3c)
+	 */
 	update_id: number;
+
+	/**
+	 * New incoming message of any kind — text, photo, sticker, etc.
+	 */
 	message?: Message;
+
+	/**
+	 * New version of a message that is known to the bot and was edited
+	 */
 	edited_message?: Message;
+
+	/**
+	 * New incoming channel post of any kind — text, photo, sticker, etc.
+	 */
 	channel_post?: Message;
+
+	/**
+	 * New version of a channel post that is known to the bot and was edited
+	 */
 	edited_channel_post?: Message;
+
+	/**
+	 * New incoming inline query
+	 */
 	inline_query?: InlineQuery;
+
+	/**
+	 * The result of an inline query that was chosen by a user and sent to their chat partner. Please see our documentation on the feedback collecting for details on how to enable these updates for your bot.
+	 */
 	chosen_inline_result?: ChosenInlineResult;
+
+	/**
+	 * New incoming callback query
+	 */
 	callback_query?: CallbackQuery;
+
+	/**
+	 * New incoming shipping query. Only for invoices with flexible price
+	 */
 	shipping_query?: ShippingQuery;
+
+	/**
+	 * New incoming pre-checkout query. Contains full information about checkout
+	 */
 	pre_checkout_query?: PreCheckoutQuery;
+
+	/**
+	 * New poll state. Bots receive only updates about stopped polls and polls, which are sent by the bot
+	 */
+	// poll?: Poll;
 }
 
+/**
+ * Contains information about the current status of a webhook.
+ */
 export interface WebhookInfo {
+	/**
+	 * Webhook URL, may be empty if webhook is not set up
+	 */
 	url: string;
+
+	/**
+	 * True, if a custom certificate was provided for webhook certificate checks
+	 */
 	has_custom_certificate: boolean;
+
+	/**
+	 * Number of updates awaiting delivery
+	 */
 	pending_update_count: number;
+
+	/**
+	 * Unix time for the most recent error that happened when trying to deliver an update via webhook
+	 */
 	last_error_date?: number;
+
+	/**
+	 * Error message in human-readable format for the most recent error that happened when trying to deliver an update via webhook
+	 */
 	last_error_message?: string;
+
+	/**
+	 * Maximum allowed number of simultaneous HTTPS connections to the webhook for update delivery
+	 */
 	max_connections?: number;
+
+	/**
+	 * A list of update types the bot is subscribed to. Defaults to all update types
+	 */
 	allowed_updates?: string[];
 }
 
 export interface User {
+	/**
+	 * Unique identifier for this user or bot
+	 */
 	id: number;
+
+	/**
+	 * True, if this user is a bot
+	 */
+	is_bot: boolean;
+
+	/**
+	 * User‘s or bot’s first name
+	 */
 	first_name: string;
+
+	/**
+	 * User‘s or bot’s last name
+	 */
 	last_name?: string;
+
+	/**
+	 * User‘s or bot’s username
+	 */
 	username?: string;
+
+	/**
+	 * IETF language tag of the user's language
+	 */
 	language_code?: string;
 }
 

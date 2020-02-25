@@ -25,7 +25,7 @@ export default class Core {
 
 			contentType = `multipart/form-data; boundary="${boundary}"`;
 
-			const entities = Object.entries(parameters).map<Entity>(([name, value]) => {
+			const entities = Object.entries<any>(parameters).map<Entity>(([name, value]) => {
 				const contentDispositionHeader = {
 					name: "content-disposition",
 					value: "form-data",
@@ -76,7 +76,7 @@ export default class Core {
 				reject(`Connection error: ${error.message}`);
 			});
 
-			request.on("response", (response: https.IncomingMessage) => {
+			request.on("response", (response: http.IncomingMessage) => {
 				if (response.statusCode === 200) {
 					let body = Buffer.alloc(0);
 
@@ -106,7 +106,7 @@ export default class Core {
 	public listen(port: number, url: string, updateListener: updateListener) {
 		const server = http.createServer();
 
-		server.on("request", (request: https.IncomingMessage, response: https.ServerResponse) => {
+		server.on("request", (request: http.IncomingMessage, response: http.ServerResponse) => {
 			if (request.url === url) {
 				let body = Buffer.alloc(0);
 
