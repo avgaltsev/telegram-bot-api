@@ -36,12 +36,15 @@ export default class Api extends AbstractApi {
 
 			const entities = Object.entries<any>(parameters).map<Entity>(([name, value]) => {
 				const contentDispositionHeader: Header = {
-					name: "content-disposition",
+					name: "Content-Disposition",
 					value: "form-data",
 					attributes: {
 						"name": name,
 					},
 				};
+
+				// TODO: text/plain default content-type (https://tools.ietf.org/html/rfc2388)
+				// TODO: move working with form data to mime lib
 
 				if (value.content) {
 					if (value.name) {
@@ -52,7 +55,7 @@ export default class Api extends AbstractApi {
 						headers: [
 							contentDispositionHeader,
 							{
-								name: "content-type",
+								name: "Content-Type",
 								value: value.contentType || "application/octet-stream",
 							},
 						],
@@ -78,8 +81,8 @@ export default class Api extends AbstractApi {
 				hostname: URL,
 				path: `/bot${this.token}/${method}`,
 				headers: {
-					"content-type": contentType,
-					"content-length": data.length,
+					"Content-Type": contentType,
+					"Content-Length": data.length,
 				},
 			});
 

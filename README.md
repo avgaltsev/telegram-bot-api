@@ -1,7 +1,7 @@
 Telegram Bot API
 ================
 
-This is a comprehensive Telegram Bot API written in TypeScript. It provides a full up-to-date list of methods and types defined by the [official documentation]((https://core.telegram.org/bots/api)).
+This is a comprehensive Telegram Bot API written in TypeScript. It provides a full up-to-date list of methods and types defined by the [official documentation](https://core.telegram.org/bots/api).
 
 Using the API
 -------------
