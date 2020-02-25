@@ -5,3 +5,5 @@ tslint.json
 
 *.ts
 !*.d.ts
+
+/sync/
