@@ -118,7 +118,7 @@ function parseText(text: string): string {
 		.replace(/<a[^>]+href="([^>]+)"[^>]*>(.*?)<\/a>/g, (match, p1, p2) => `[${p2}](${(new URL(p1, BASE_URL)).href})`);
 }
 
-async function getContent(page: Page, element: ElementHandle): Promise<string> {
+function getContent(page: Page, element: ElementHandle): Promise<string> {
 	return page.evaluate((element) => element.innerHTML, element);
 }
 
@@ -239,7 +239,7 @@ function parseTypes(page: Page, types: Type[]): Promise<TypeOutput[]> {
 	}));
 }
 
-async function parseMethods(page: Page, methods: Method[]): Promise<MethodOutput[]> {
+function parseMethods(page: Page, methods: Method[]): Promise<MethodOutput[]> {
 	return Promise.all(methods.map(async (method) => {
 		const content = await parseContent(page, method.name);
 
