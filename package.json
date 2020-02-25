@@ -1,6 +1,6 @@
 {
 	"name": "@somethings/telegram-bot-api",
-	"version": "0.0.0",
+	"version": "4.3.0",
 	"description": "Comprehensive Telegram Bot API written in TypeScript",
 	"keywords": [
 		"telegram",
