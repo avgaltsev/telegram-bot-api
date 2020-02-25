@@ -1,7 +1,5 @@
 <!-- scroll_nav -->
 
-
-
 <blockquote>
 <p>The Bot API is an HTTP-based interface created for developers keen on building bots for Telegram.<br>To learn how to create and set up a bot, please consult our <a href="https://core.telegram.org/bots"><strong>Introduction to Bots</strong></a> and <a href="/bots/faq"><strong>Bot FAQ</strong></a>.</p>
 </blockquote>
@@ -51,7 +49,7 @@
 </ul>
 <p><strong><a href="/bots/api-changelog">See earlier changes »</a></strong></p>
 <h3><a class="anchor" name="authorizing-your-bot" href="#authorizing-your-bot" id="authorizing-your-bot"><i class="anchor-icon"></i></a>Authorizing your bot</h3>
-<p>Each bot is given a unique authentication token <a href="/bots#botfather">when it is created</a>. The token looks something like <code>123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11</code>, but we'll use simply <strong>&lt;token&gt;</strong> in this document instead. You can learn about obtaining tokens and generating new ones in <a href="https://core.telegram.org/bots#botfather">this document</a>.</p>
+<p>Each bot is given a unique authentication token <a href="/bots#6-botfather">when it is created</a>. The token looks something like <code>123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11</code>, but we'll use simply <strong>&lt;token&gt;</strong> in this document instead. You can learn about obtaining tokens and generating new ones in <a href="https://core.telegram.org/bots#6-botfather">this document</a>.</p>
 <h3><a class="anchor" name="making-requests" href="#making-requests" id="making-requests"><i class="anchor-icon"></i></a>Making requests</h3>
 <p>All queries to the Telegram Bot API must be served over HTTPS and need to be presented in this form: <code>https://api.telegram.org/bot&lt;token&gt;/METHOD_NAME</code>. Like this for example:</p>
 <pre><code>https://api.telegram.org/bot123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11/getMe</code></pre>
@@ -144,7 +142,7 @@
 </tbody>
 </table>
 <h4><a class="anchor" name="getupdates" href="#getupdates" id="getupdates"><i class="anchor-icon"></i></a>getUpdates</h4>
-<p>Use this method to receive incoming updates using long polling (<a href="http://en.wikipedia.org/wiki/Push_technology#Long_polling">wiki</a>). An Array of <a href="#update">Update</a> objects is returned.</p>
+<p>Use this method to receive incoming updates using long polling (<a href="https://en.wikipedia.org/wiki/Push_technology#Long_polling">wiki</a>). An Array of <a href="#update">Update</a> objects is returned.</p>
 <table class="table">
 <thead>
 <tr>
@@ -1933,7 +1931,7 @@
 <li>It is not possible to resend thumbnails.</li>
 <li>Resending a photo by <strong>file_id</strong> will send all of its <a href="#photosize">sizes</a>.</li>
 <li><strong>file_id</strong> is unique for each individual bot and <strong>can't</strong> be transferred from one bot to another.</li>
-<li><strong>file_id</strong> uniquely identifies a file, but a file can have different valid <strong>file_id</strong>s.</li>
+<li><strong>file_id</strong> uniquely identifies a file, but a file can have different valid <strong>file_id</strong>s even for the same bot.</li>
 </ul>
 <p><strong>Sending by URL</strong></p>
 <ul>
@@ -3020,9 +3018,6 @@ pre-formatted fixed-width code block
 <p><strong>Note:</strong> This function may not preserve the original file name and MIME type. You should save the file's MIME type and name (if available) when the File object is received.</p>
 <h4><a class="anchor" name="kickchatmember" href="#kickchatmember" id="kickchatmember"><i class="anchor-icon"></i></a>kickChatMember</h4>
 <p>Use this method to kick a user from a group, a supergroup or a channel. In the case of supergroups and channels, the user will not be able to return to the group on their own using invite links, etc., unless <a href="#unbanchatmember">unbanned</a> first. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns <em>True</em> on success.</p>
-<blockquote>
-<p>Note: In regular groups (non-supergroups), this method will only work if the ‘All Members Are Admins’ setting is off in the target group. Otherwise members may only be removed by the group's creator or by the member that added them.</p>
-</blockquote>
 <table class="table">
 <thead>
 <tr>
@@ -3242,9 +3237,6 @@ pre-formatted fixed-width code block
 </blockquote>
 <h4><a class="anchor" name="setchatphoto" href="#setchatphoto" id="setchatphoto"><i class="anchor-icon"></i></a>setChatPhoto</h4>
 <p>Use this method to set a new profile photo for the chat. Photos can't be changed for private chats. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns <em>True</em> on success.</p>
-<blockquote>
-<p>Note: In regular groups (non-supergroups), this method will only work if the ‘All Members Are Admins’ setting is off in the target group.</p>
-</blockquote>
 <table class="table">
 <thead>
 <tr>
@@ -3271,9 +3263,6 @@ pre-formatted fixed-width code block
 </table>
 <h4><a class="anchor" name="deletechatphoto" href="#deletechatphoto" id="deletechatphoto"><i class="anchor-icon"></i></a>deleteChatPhoto</h4>
 <p>Use this method to delete a chat photo. Photos can't be changed for private chats. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns <em>True</em> on success.</p>
-<blockquote>
-<p>Note: In regular groups (non-supergroups), this method will only work if the ‘All Members Are Admins’ setting is off in the target group.</p>
-</blockquote>
 <table class="table">
 <thead>
 <tr>
@@ -3294,9 +3283,6 @@ pre-formatted fixed-width code block
 </table>
 <h4><a class="anchor" name="setchattitle" href="#setchattitle" id="setchattitle"><i class="anchor-icon"></i></a>setChatTitle</h4>
 <p>Use this method to change the title of a chat. Titles can't be changed for private chats. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns <em>True</em> on success.</p>
-<blockquote>
-<p>Note: In regular groups (non-supergroups), this method will only work if the ‘All Members Are Admins’ setting is off in the target group.</p>
-</blockquote>
 <table class="table">
 <thead>
 <tr>
