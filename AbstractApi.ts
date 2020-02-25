@@ -5278,7 +5278,7 @@ export interface GetGameHighScoresParameters {
 
 export default abstract class AbstractApi {
 	/**
-	 * Use this method to receive incoming updates using long polling ([wiki](http://en.wikipedia.org/wiki/Push_technology#Long_polling)). An Array of [Update](https://core.telegram.org/bots/api#update) objects is returned.
+	 * Use this method to receive incoming updates using long polling ([wiki](https://en.wikipedia.org/wiki/Push_technology#Long_polling)). An Array of [Update](https://core.telegram.org/bots/api#update) objects is returned.
 	 *
 	 * > **Notes**
 	 * >
@@ -5425,8 +5425,6 @@ export default abstract class AbstractApi {
 
 	/**
 	 * Use this method to kick a user from a group, a supergroup or a channel. In the case of supergroups and channels, the user will not be able to return to the group on their own using invite links, etc., unless [unbanned](https://core.telegram.org/bots/api#unbanchatmember) first. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns _True_ on success.
-	 *
-	 * > Note: In regular groups (non-supergroups), this method will only work if the ‘All Members Are Admins’ setting is off in the target group. Otherwise members may only be removed by the group's creator or by the member that added them.
 	 */
 	abstract kickChatMember(parameters: KickChatMemberParameters): Promise<boolean>;
 
@@ -5459,22 +5457,16 @@ export default abstract class AbstractApi {
 
 	/**
 	 * Use this method to set a new profile photo for the chat. Photos can't be changed for private chats. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns _True_ on success.
-	 *
-	 * > Note: In regular groups (non-supergroups), this method will only work if the ‘All Members Are Admins’ setting is off in the target group.
 	 */
 	abstract setChatPhoto(parameters: SetChatPhotoParameters): Promise<boolean>;
 
 	/**
 	 * Use this method to delete a chat photo. Photos can't be changed for private chats. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns _True_ on success.
-	 *
-	 * > Note: In regular groups (non-supergroups), this method will only work if the ‘All Members Are Admins’ setting is off in the target group.
 	 */
 	abstract deleteChatPhoto(parameters: DeleteChatPhotoParameters): Promise<boolean>;
 
 	/**
 	 * Use this method to change the title of a chat. Titles can't be changed for private chats. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns _True_ on success.
-	 *
-	 * > Note: In regular groups (non-supergroups), this method will only work if the ‘All Members Are Admins’ setting is off in the target group.
 	 */
 	abstract setChatTitle(parameters: SetChatTitleParameters): Promise<boolean>;
 
