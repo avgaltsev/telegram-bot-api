@@ -390,6 +390,11 @@ export interface Message {
 	poll?: Poll;
 
 	/**
+	 * _Optional_. Message is a dice with random value from 1 to 6
+	 */
+	dice?: Dice;
+
+	/**
 	 * _Optional_. New members that were added to the group or supergroup and information about them (the bot itself may be one of these members)
 	 */
 	new_chat_members?: User[];
@@ -936,6 +941,16 @@ export interface Poll {
 }
 
 /**
+ * This object represents a dice with random value from 1 to 6. (Yes, we're aware of the _“proper”_ singular of _die_. But it's awkward, and we decided to help it change. One dice at a time!)
+ */
+export interface Dice {
+	/**
+	 * Value of the dice, 1-6
+	 */
+	value: number;
+}
+
+/**
  * This object represent a user's profile pictures.
  */
 export interface UserProfilePhotos {
@@ -1391,6 +1406,21 @@ export interface ChatPermissions {
 }
 
 /**
+ * This object represents a bot command.
+ */
+export interface BotCommand {
+	/**
+	 * Text of the command, 1-32 characters. Can contain only lowercase English letters, digits and underscores.
+	 */
+	command: string;
+
+	/**
+	 * Description of the command, 3-256 characters.
+	 */
+	description: string;
+}
+
+/**
  * Contains information about why a request was unsuccessful.
  */
 export interface ResponseParameters {
@@ -1652,7 +1682,7 @@ export interface Sticker {
 	is_animated: boolean;
 
 	/**
-	 * _Optional_. Sticker thumbnail in the .webp or .jpg format
+	 * _Optional_. Sticker thumbnail in the .WEBP or .JPG format
 	 */
 	thumb?: PhotoSize;
 
@@ -1705,6 +1735,11 @@ export interface StickerSet {
 	 * List of all set stickers
 	 */
 	stickers: Sticker[];
+
+	/**
+	 * _Optional_. Sticker set thumbnail in the .WEBP or .TGS format
+	 */
+	thumb?: PhotoSize;
 }
 
 /**
@@ -2178,7 +2213,7 @@ export interface InlineQueryResultAudio {
 }
 
 /**
- * Represents a link to a voice recording in an .ogg container encoded with OPUS. By default, this voice recording will be sent by the user. Alternatively, you can use _input_message_content_ to send a message with the specified content instead of the the voice message.
+ * Represents a link to a voice recording in an .OGG container encoded with OPUS. By default, this voice recording will be sent by the user. Alternatively, you can use _input_message_content_ to send a message with the specified content instead of the the voice message.
  *
  * **Note:** This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.
  */
@@ -4445,6 +4480,31 @@ export interface SendPollParameters {
 }
 
 /**
+ * `sendDice` parameters
+ */
+export interface SendDiceParameters {
+	/**
+	 * Unique identifier for the target chat or username of the target channel (in the format `@channelusername`)
+	 */
+	chat_id: number | string;
+
+	/**
+	 * Sends the message [silently](https://telegram.org/blog/channels-2-0#silent-messages). Users will receive a notification with no sound.
+	 */
+	disable_notification?: boolean;
+
+	/**
+	 * If the message is a reply, ID of the original message
+	 */
+	reply_to_message_id?: number;
+
+	/**
+	 * Additional interface options. A JSON-serialized object for an [inline keyboard](https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating), [custom reply keyboard](https://core.telegram.org/bots#keyboards), instructions to remove reply keyboard or to force a reply from the user.
+	 */
+	reply_markup?: InlineKeyboardMarkup | ReplyKeyboardMarkup | ReplyKeyboardRemove | ForceReply;
+}
+
+/**
  * `sendChatAction` parameters
  */
 export interface SendChatActionParameters {
@@ -4847,6 +4907,16 @@ export interface AnswerCallbackQueryParameters {
 }
 
 /**
+ * `setMyCommands` parameters
+ */
+export interface SetMyCommandsParameters {
+	/**
+	 * A JSON-serialized list of bot commands to be set as the list of the bot's commands. At most 100 commands can be specified.
+	 */
+	commands: BotCommand[];
+}
+
+/**
  * `editMessageText` parameters
  */
 export interface EditMessageTextParameters {
@@ -5021,7 +5091,7 @@ export interface SendStickerParameters {
 	chat_id: number | string;
 
 	/**
-	 * Sticker to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a .webp file from the Internet, or upload a new one using multipart/form-data. [More info on Sending Files »](https://core.telegram.org/bots/api#sending-files)
+	 * Sticker to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a .WEBP file from the Internet, or upload a new one using multipart/form-data. [More info on Sending Files »](https://core.telegram.org/bots/api#sending-files)
 	 */
 	sticker: InputFile | string;
 
@@ -5086,9 +5156,14 @@ export interface CreateNewStickerSetParameters {
 	title: string;
 
 	/**
-	 * **Png** image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. Pass a _file_id_ as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. [More info on Sending Files »](https://core.telegram.org/bots/api#sending-files)
+	 * **PNG** image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. Pass a _file_id_ as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. [More info on Sending Files »](https://core.telegram.org/bots/api#sending-files)
 	 */
-	png_sticker: InputFile | string;
+	png_sticker?: InputFile | string;
+
+	/**
+	 * **TGS** animation with the sticker, uploaded using multipart/form-data. See [](https://core.telegram.org/animated_stickers#technical-requirements)[https://core.telegram.org/animated_stickers#technical-requirements](https://core.telegram.org/animated_stickers#technical-requirements) for technical requirements
+	 */
+	tgs_sticker?: InputFile;
 
 	/**
 	 * One or more emoji corresponding to the sticker
@@ -5121,9 +5196,14 @@ export interface AddStickerToSetParameters {
 	name: string;
 
 	/**
-	 * **Png** image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. Pass a _file_id_ as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. [More info on Sending Files »](https://core.telegram.org/bots/api#sending-files)
+	 * **PNG** image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. Pass a _file_id_ as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. [More info on Sending Files »](https://core.telegram.org/bots/api#sending-files)
 	 */
 	png_sticker: InputFile | string;
+
+	/**
+	 * **TGS** animation with the sticker, uploaded using multipart/form-data. See [](https://core.telegram.org/animated_stickers#technical-requirements)[https://core.telegram.org/animated_stickers#technical-requirements](https://core.telegram.org/animated_stickers#technical-requirements) for technical requirements
+	 */
+	tgs_sticker?: InputFile;
 
 	/**
 	 * One or more emoji corresponding to the sticker
@@ -5159,6 +5239,26 @@ export interface DeleteStickerFromSetParameters {
 	 * File identifier of the sticker
 	 */
 	sticker: string;
+}
+
+/**
+ * `setStickerSetThumb` parameters
+ */
+export interface SetStickerSetThumbParameters {
+	/**
+	 * Sticker set name
+	 */
+	name: string;
+
+	/**
+	 * User identifier of the sticker set owner
+	 */
+	user_id: number;
+
+	/**
+	 * A **PNG** image with the thumbnail, must be up to 128 kilobytes in size and have width and height exactly 100px, or a **TGS** animation with the thumbnail up to 32 kilobytes in size; see [](https://core.telegram.org/animated_stickers#technical-requirements)[https://core.telegram.org/animated_stickers#technical-requirements](https://core.telegram.org/animated_stickers#technical-requirements) for animated sticker technical requirements. Pass a _file_id_ as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. [More info on Sending Files »](https://core.telegram.org/bots/api#sending-files). Animated sticker set thumbnail can't be uploaded via HTTP URL.
+	 */
+	thumb?: InputFile | string;
 }
 
 /**
@@ -5560,7 +5660,7 @@ export default abstract class AbstractApi {
 	abstract sendAnimation(parameters: SendAnimationParameters): Promise<Message>;
 
 	/**
-	 * Use this method to send audio files, if you want Telegram clients to display the file as a playable voice message. For this to work, your audio must be in an .ogg file encoded with OPUS (other formats may be sent as [Audio](https://core.telegram.org/bots/api#audio) or [Document](https://core.telegram.org/bots/api#document)). On success, the sent [Message](https://core.telegram.org/bots/api#message) is returned. Bots can currently send voice messages of up to 50 MB in size, this limit may be changed in the future.
+	 * Use this method to send audio files, if you want Telegram clients to display the file as a playable voice message. For this to work, your audio must be in an .OGG file encoded with OPUS (other formats may be sent as [Audio](https://core.telegram.org/bots/api#audio) or [Document](https://core.telegram.org/bots/api#document)). On success, the sent [Message](https://core.telegram.org/bots/api#message) is returned. Bots can currently send voice messages of up to 50 MB in size, this limit may be changed in the future.
 	 */
 	abstract sendVoice(parameters: SendVoiceParameters): Promise<Message>;
 
@@ -5603,6 +5703,11 @@ export default abstract class AbstractApi {
 	 * Use this method to send a native poll. On success, the sent [Message](https://core.telegram.org/bots/api#message) is returned.
 	 */
 	abstract sendPoll(parameters: SendPollParameters): Promise<Message>;
+
+	/**
+	 * Use this method to send a dice, which will have a random value from 1 to 6. On success, the sent [Message](https://core.telegram.org/bots/api#message) is returned. (Yes, we're aware of the _“proper”_ singular of _die_. But it's awkward, and we decided to help it change. One dice at a time!)
+	 */
+	abstract sendDice(parameters: SendDiceParameters): Promise<Message>;
 
 	/**
 	 * Use this method when you need to tell the user that something is happening on the bot's side. The status is set for 5 seconds or less (when a message arrives from your bot, Telegram clients clear its typing status). Returns _True_ on success.
@@ -5735,6 +5840,16 @@ export default abstract class AbstractApi {
 	abstract answerCallbackQuery(parameters: AnswerCallbackQueryParameters): Promise<boolean>;
 
 	/**
+	 * Use this method to change the list of the bot's commands. Returns _True_ on success.
+	 */
+	abstract setMyCommands(parameters: SetMyCommandsParameters): Promise<boolean>;
+
+	/**
+	 * Use this method to get the current list of the bot's commands. Requires no parameters. Returns Array of [BotCommand](https://core.telegram.org/bots/api#botcommand) on success.
+	 */
+	abstract getMyCommands(): Promise<BotCommand[]>;
+
+	/**
 	 * Use this method to edit text and [game](https://core.telegram.org/bots/api#games) messages. On success, if edited message is sent by the bot, the edited [Message](https://core.telegram.org/bots/api#message) is returned, otherwise _True_ is returned.
 	 */
 	abstract editMessageText(parameters: EditMessageTextParameters): Promise<Message | boolean>;
@@ -5764,6 +5879,8 @@ export default abstract class AbstractApi {
 	 *
 	 * - A message can only be deleted if it was sent less than 48 hours ago.
 	 *
+	 * - A dice message in a private chat can only be deleted if it was sent more than 24 hours ago.
+	 *
 	 * - Bots can delete outgoing messages in private chats, groups, and supergroups.
 	 *
 	 * - Bots can delete incoming messages in private chats.
@@ -5789,22 +5906,22 @@ export default abstract class AbstractApi {
 	abstract getStickerSet(parameters: GetStickerSetParameters): Promise<StickerSet>;
 
 	/**
-	 * Use this method to upload a .png file with a sticker for later use in _createNewStickerSet_ and _addStickerToSet_ methods (can be used multiple times). Returns the uploaded [File](https://core.telegram.org/bots/api#file) on success.
+	 * Use this method to upload a .PNG file with a sticker for later use in _createNewStickerSet_ and _addStickerToSet_ methods (can be used multiple times). Returns the uploaded [File](https://core.telegram.org/bots/api#file) on success.
 	 */
 	abstract uploadStickerFile(parameters: UploadStickerFileParameters): Promise<File>;
 
 	/**
-	 * Use this method to create new sticker set owned by a user. The bot will be able to edit the created sticker set. Returns _True_ on success.
+	 * Use this method to create a new sticker set owned by a user. The bot will be able to edit the sticker set thus created. You **must** use exactly one of the fields _png_sticker_ or _tgs_sticker_. Returns _True_ on success.
 	 */
 	abstract createNewStickerSet(parameters: CreateNewStickerSetParameters): Promise<boolean>;
 
 	/**
-	 * Use this method to add a new sticker to a set created by the bot. Returns _True_ on success.
+	 * Use this method to add a new sticker to a set created by the bot. You **must** use exactly one of the fields _png_sticker_ or _tgs_sticker_. Animated stickers can be added to animated sticker sets and only to them. Animated sticker sets can have up to 50 stickers. Static sticker sets can have up to 120 stickers. Returns _True_ on success.
 	 */
 	abstract addStickerToSet(parameters: AddStickerToSetParameters): Promise<boolean>;
 
 	/**
-	 * Use this method to move a sticker in a set created by the bot to a specific position . Returns _True_ on success.
+	 * Use this method to move a sticker in a set created by the bot to a specific position. Returns _True_ on success.
 	 */
 	abstract setStickerPositionInSet(parameters: SetStickerPositionInSetParameters): Promise<boolean>;
 
@@ -5812,6 +5929,11 @@ export default abstract class AbstractApi {
 	 * Use this method to delete a sticker from a set created by the bot. Returns _True_ on success.
 	 */
 	abstract deleteStickerFromSet(parameters: DeleteStickerFromSetParameters): Promise<boolean>;
+
+	/**
+	 * Use this method to set the thumbnail of a sticker set. Animated thumbnails can be set for animated sticker sets only. Returns _True_ on success.
+	 */
+	abstract setStickerSetThumb(parameters: SetStickerSetThumbParameters): Promise<boolean>;
 
 	/**
 	 * Use this method to send answers to an inline query. On success, _True_ is returned.

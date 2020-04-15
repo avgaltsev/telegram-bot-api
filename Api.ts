@@ -268,6 +268,10 @@ export default class Api extends AbstractApi {
 		return this.call("sendPoll", parameters);
 	}
 
+	public sendDice(parameters: api.SendDiceParameters): Promise<api.Message> {
+		return this.call("sendDice", parameters);
+	}
+
 	public sendChatAction(parameters: api.SendChatActionParameters): Promise<boolean> {
 		return this.call("sendChatAction", parameters);
 	}
@@ -364,6 +368,14 @@ export default class Api extends AbstractApi {
 		return this.call("answerCallbackQuery", parameters);
 	}
 
+	public setMyCommands(parameters: api.SetMyCommandsParameters): Promise<boolean> {
+		return this.call("setMyCommands", parameters);
+	}
+
+	public getMyCommands(): Promise<api.BotCommand[]> {
+		return this.call("getMyCommands");
+	}
+
 	public editMessageText(parameters: api.EditMessageTextParameters): Promise<boolean | api.Message> {
 		return this.call("editMessageText", parameters);
 	}
@@ -414,6 +426,10 @@ export default class Api extends AbstractApi {
 
 	public deleteStickerFromSet(parameters: api.DeleteStickerFromSetParameters): Promise<boolean> {
 		return this.call("deleteStickerFromSet", parameters);
+	}
+
+	public setStickerSetThumb(parameters: api.SetStickerSetThumbParameters): Promise<boolean> {
+		return this.call("setStickerSetThumb", parameters);
 	}
 
 	public answerInlineQuery(parameters: api.AnswerInlineQueryParameters): Promise<boolean> {

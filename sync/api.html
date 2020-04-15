@@ -7,6 +7,18 @@
 <blockquote>
 <p>Subscribe to <a href="https://t.me/botnews">@BotNews</a> to be the first to know about the latest updates and join the discussion in <a href="https://t.me/bottalk">@BotTalk</a></p>
 </blockquote>
+<h4><a class="anchor" name="march-30-2020" href="#march-30-2020" id="march-30-2020"><i class="anchor-icon"></i></a>March 30, 2020</h4>
+<p><strong>Bot API 4.7</strong></p>
+<ul>
+<li>Added the method <a href="#senddice">sendDice</a> for sending a dice message, which will have a random value from 1 to 6. (Yes, we're aware of the <em>“proper”</em> singular of <em>die</em>. But it's awkward, and we decided to help it change. One dice at a time!)</li>
+<li>Added the field <a href="#dice">dice</a> to the <a href="#message">Message</a> object.</li>
+<li>Added the method <a href="#getmycommands">getMyCommands</a> for getting the current list of the bot's commands.</li>
+<li>Added the method <a href="#setmycommands">setMyCommands</a> for changing the list of the bot's commands through the Bot API instead of <a href="https://t.me/botfather">@BotFather</a>.</li>
+<li>Added the ability to create animated sticker sets by specifying the parameter <em>tgs_sticker</em> instead of <em>png_sticker</em> in the method <a href="#createnewstickerset">createNewStickerSet</a>.</li>
+<li>Added the ability to add animated stickers to sets created by the bot by specifying the parameter <em>tgs_sticker</em> instead of <em>png_sticker</em> in the method <a href="#addstickertoset">addStickerToSet</a>.</li>
+<li>Added the field <em>thumb</em> to the <a href="#stickerset">StickerSet</a> object.</li>
+<li>Added the ability to change thumbnails of sticker sets created by the bot using the method <a href="#setstickersetthumb">setStickerSetThumb</a>.</li>
+</ul>
 <h4><a class="anchor" name="january-23-2020" href="#january-23-2020" id="january-23-2020"><i class="anchor-icon"></i></a>January 23, 2020</h4>
 <p><strong>Bot API 4.6</strong></p>
 <ul>
@@ -578,6 +590,11 @@
 <td>poll</td>
 <td><a href="#poll">Poll</a></td>
 <td><em>Optional</em>. Message is a native poll, information about the poll</td>
+</tr>
+<tr>
+<td>dice</td>
+<td><a href="#dice">Dice</a></td>
+<td><em>Optional</em>. Message is a dice with random value from 1 to 6</td>
 </tr>
 <tr>
 <td>new_chat_members</td>
@@ -1238,6 +1255,24 @@
 </tr>
 </tbody>
 </table>
+<h4><a class="anchor" name="dice" href="#dice" id="dice"><i class="anchor-icon"></i></a>Dice</h4>
+<p>This object represents a dice with random value from 1 to 6. (Yes, we're aware of the <em>“proper”</em> singular of <em>die</em>. But it's awkward, and we decided to help it change. One dice at a time!)</p>
+<table class="table">
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>value</td>
+<td>Integer</td>
+<td>Value of the dice, 1-6</td>
+</tr>
+</tbody>
+</table>
 <h4><a class="anchor" name="userprofilephotos" href="#userprofilephotos" id="userprofilephotos"><i class="anchor-icon"></i></a>UserProfilePhotos</h4>
 <p>This object represent a user's profile pictures.</p>
 <table class="table">
@@ -1791,6 +1826,29 @@
 <td>can_pin_messages</td>
 <td>Boolean</td>
 <td><em>Optional</em>. True, if the user is allowed to pin messages. Ignored in public supergroups</td>
+</tr>
+</tbody>
+</table>
+<h4><a class="anchor" name="botcommand" href="#botcommand" id="botcommand"><i class="anchor-icon"></i></a>BotCommand</h4>
+<p>This object represents a bot command.</p>
+<table class="table">
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>command</td>
+<td>String</td>
+<td>Text of the command, 1-32 characters. Can contain only lowercase English letters, digits and underscores.</td>
+</tr>
+<tr>
+<td>description</td>
+<td>String</td>
+<td>Description of the command, 3-256 characters.</td>
 </tr>
 </tbody>
 </table>
@@ -2627,7 +2685,7 @@ pre-formatted fixed-width code block written in the Python programming language
 </tbody>
 </table>
 <h4><a class="anchor" name="sendvoice" href="#sendvoice" id="sendvoice"><i class="anchor-icon"></i></a>sendVoice</h4>
-<p>Use this method to send audio files, if you want Telegram clients to display the file as a playable voice message. For this to work, your audio must be in an .ogg file encoded with OPUS (other formats may be sent as <a href="#audio">Audio</a> or <a href="#document">Document</a>). On success, the sent <a href="#message">Message</a> is returned. Bots can currently send voice messages of up to 50 MB in size, this limit may be changed in the future.</p>
+<p>Use this method to send audio files, if you want Telegram clients to display the file as a playable voice message. For this to work, your audio must be in an .OGG file encoded with OPUS (other formats may be sent as <a href="#audio">Audio</a> or <a href="#document">Document</a>). On success, the sent <a href="#message">Message</a> is returned. Bots can currently send voice messages of up to 50 MB in size, this limit may be changed in the future.</p>
 <table class="table">
 <thead>
 <tr>
@@ -3127,6 +3185,44 @@ pre-formatted fixed-width code block written in the Python programming language
 <td>Boolean</td>
 <td>Optional</td>
 <td>Pass <em>True</em>, if the poll needs to be immediately closed. This can be useful for poll preview.</td>
+</tr>
+<tr>
+<td>disable_notification</td>
+<td>Boolean</td>
+<td>Optional</td>
+<td>Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.</td>
+</tr>
+<tr>
+<td>reply_to_message_id</td>
+<td>Integer</td>
+<td>Optional</td>
+<td>If the message is a reply, ID of the original message</td>
+</tr>
+<tr>
+<td>reply_markup</td>
+<td><a href="#inlinekeyboardmarkup">InlineKeyboardMarkup</a> or <a href="#replykeyboardmarkup">ReplyKeyboardMarkup</a> or <a href="#replykeyboardremove">ReplyKeyboardRemove</a> or <a href="#forcereply">ForceReply</a></td>
+<td>Optional</td>
+<td>Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user.</td>
+</tr>
+</tbody>
+</table>
+<h4><a class="anchor" name="senddice" href="#senddice" id="senddice"><i class="anchor-icon"></i></a>sendDice</h4>
+<p>Use this method to send a dice, which will have a random value from 1 to 6. On success, the sent <a href="#message">Message</a> is returned. (Yes, we're aware of the <em>“proper”</em> singular of <em>die</em>. But it's awkward, and we decided to help it change. One dice at a time!)</p>
+<table class="table">
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>chat_id</td>
+<td>Integer or String</td>
+<td>Yes</td>
+<td>Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)</td>
 </tr>
 <tr>
 <td>disable_notification</td>
@@ -3831,6 +3927,28 @@ pre-formatted fixed-width code block written in the Python programming language
 </tr>
 </tbody>
 </table>
+<h4><a class="anchor" name="setmycommands" href="#setmycommands" id="setmycommands"><i class="anchor-icon"></i></a>setMyCommands</h4>
+<p>Use this method to change the list of the bot's commands. Returns <em>True</em> on success.</p>
+<table class="table">
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>commands</td>
+<td>Array of <a href="#botcommand">BotCommand</a></td>
+<td>Yes</td>
+<td>A JSON-serialized list of bot commands to be set as the list of the bot's commands. At most 100 commands can be specified.</td>
+</tr>
+</tbody>
+</table>
+<h4><a class="anchor" name="getmycommands" href="#getmycommands" id="getmycommands"><i class="anchor-icon"></i></a>getMyCommands</h4>
+<p>Use this method to get the current list of the bot's commands. Requires no parameters. Returns Array of <a href="#botcommand">BotCommand</a> on success.</p>
 <h4><a class="anchor" name="inline-mode-methods" href="#inline-mode-methods" id="inline-mode-methods"><i class="anchor-icon"></i></a>Inline mode methods</h4>
 <p>Methods and objects used in the inline mode are described in the <a href="#inline-mode">Inline mode section</a>.</p>
 <h3><a class="anchor" name="updating-messages" href="#updating-messages" id="updating-messages"><i class="anchor-icon"></i></a>Updating messages</h3>
@@ -4057,7 +4175,7 @@ pre-formatted fixed-width code block written in the Python programming language
 </tbody>
 </table>
 <h4><a class="anchor" name="deletemessage" href="#deletemessage" id="deletemessage"><i class="anchor-icon"></i></a>deleteMessage</h4>
-<p>Use this method to delete a message, including service messages, with the following limitations:<br>- A message can only be deleted if it was sent less than 48 hours ago.<br>- Bots can delete outgoing messages in private chats, groups, and supergroups.<br>- Bots can delete incoming messages in private chats.<br>- Bots granted <em>can_post_messages</em> permissions can delete outgoing messages in channels.<br>- If the bot is an administrator of a group, it can delete any message there.<br>- If the bot has <em>can_delete_messages</em> permission in a supergroup or a channel, it can delete any message there.<br>Returns <em>True</em> on success.</p>
+<p>Use this method to delete a message, including service messages, with the following limitations:<br>- A message can only be deleted if it was sent less than 48 hours ago.<br>- A dice message in a private chat can only be deleted if it was sent more than 24 hours ago.<br>- Bots can delete outgoing messages in private chats, groups, and supergroups.<br>- Bots can delete incoming messages in private chats.<br>- Bots granted <em>can_post_messages</em> permissions can delete outgoing messages in channels.<br>- If the bot is an administrator of a group, it can delete any message there.<br>- If the bot has <em>can_delete_messages</em> permission in a supergroup or a channel, it can delete any message there.<br>Returns <em>True</em> on success.</p>
 <table class="table">
 <thead>
 <tr>
@@ -4123,7 +4241,7 @@ pre-formatted fixed-width code block written in the Python programming language
 <tr>
 <td>thumb</td>
 <td><a href="#photosize">PhotoSize</a></td>
-<td><em>Optional</em>. Sticker thumbnail in the .webp or .jpg format</td>
+<td><em>Optional</em>. Sticker thumbnail in the .WEBP or .JPG format</td>
 </tr>
 <tr>
 <td>emoji</td>
@@ -4183,6 +4301,11 @@ pre-formatted fixed-width code block written in the Python programming language
 <td>Array of <a href="#sticker">Sticker</a></td>
 <td>List of all set stickers</td>
 </tr>
+<tr>
+<td>thumb</td>
+<td><a href="#photosize">PhotoSize</a></td>
+<td><em>Optional</em>. Sticker set thumbnail in the .WEBP or .TGS format</td>
+</tr>
 </tbody>
 </table>
 <h4><a class="anchor" name="maskposition" href="#maskposition" id="maskposition"><i class="anchor-icon"></i></a>MaskPosition</h4>
@@ -4240,7 +4363,7 @@ pre-formatted fixed-width code block written in the Python programming language
 <td>sticker</td>
 <td><a href="#inputfile">InputFile</a> or String</td>
 <td>Yes</td>
-<td>Sticker to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a .webp file from the Internet, or upload a new one using multipart/form-data. <a href="#sending-files">More info on Sending Files »</a></td>
+<td>Sticker to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a .WEBP file from the Internet, or upload a new one using multipart/form-data. <a href="#sending-files">More info on Sending Files »</a></td>
 </tr>
 <tr>
 <td>disable_notification</td>
@@ -4283,7 +4406,7 @@ pre-formatted fixed-width code block written in the Python programming language
 </tbody>
 </table>
 <h4><a class="anchor" name="uploadstickerfile" href="#uploadstickerfile" id="uploadstickerfile"><i class="anchor-icon"></i></a>uploadStickerFile</h4>
-<p>Use this method to upload a .png file with a sticker for later use in <em>createNewStickerSet</em> and <em>addStickerToSet</em> methods (can be used multiple times). Returns the uploaded <a href="#file">File</a> on success.</p>
+<p>Use this method to upload a .PNG file with a sticker for later use in <em>createNewStickerSet</em> and <em>addStickerToSet</em> methods (can be used multiple times). Returns the uploaded <a href="#file">File</a> on success.</p>
 <table class="table">
 <thead>
 <tr>
@@ -4309,7 +4432,7 @@ pre-formatted fixed-width code block written in the Python programming language
 </tbody>
 </table>
 <h4><a class="anchor" name="createnewstickerset" href="#createnewstickerset" id="createnewstickerset"><i class="anchor-icon"></i></a>createNewStickerSet</h4>
-<p>Use this method to create new sticker set owned by a user. The bot will be able to edit the created sticker set. Returns <em>True</em> on success.</p>
+<p>Use this method to create a new sticker set owned by a user. The bot will be able to edit the sticker set thus created. You <strong>must</strong> use exactly one of the fields <em>png_sticker</em> or <em>tgs_sticker</em>. Returns <em>True</em> on success.</p>
 <table class="table">
 <thead>
 <tr>
@@ -4341,8 +4464,14 @@ pre-formatted fixed-width code block written in the Python programming language
 <tr>
 <td>png_sticker</td>
 <td><a href="#inputfile">InputFile</a> or String</td>
-<td>Yes</td>
-<td><strong>Png</strong> image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. Pass a <em>file_id</em> as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. <a href="#sending-files">More info on Sending Files »</a></td>
+<td>Optional</td>
+<td><strong>PNG</strong> image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. Pass a <em>file_id</em> as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. <a href="#sending-files">More info on Sending Files »</a></td>
+</tr>
+<tr>
+<td>tgs_sticker</td>
+<td><a href="#inputfile">InputFile</a></td>
+<td>Optional</td>
+<td><strong>TGS</strong> animation with the sticker, uploaded using multipart/form-data. See <a href="https://core.telegram.org/animated_stickers#technical-requirements"></a><a href="https://core.telegram.org/animated_stickers#technical-requirements">https://core.telegram.org/animated_stickers#technical-requirements</a> for technical requirements</td>
 </tr>
 <tr>
 <td>emojis</td>
@@ -4365,7 +4494,7 @@ pre-formatted fixed-width code block written in the Python programming language
 </tbody>
 </table>
 <h4><a class="anchor" name="addstickertoset" href="#addstickertoset" id="addstickertoset"><i class="anchor-icon"></i></a>addStickerToSet</h4>
-<p>Use this method to add a new sticker to a set created by the bot. Returns <em>True</em> on success.</p>
+<p>Use this method to add a new sticker to a set created by the bot. You <strong>must</strong> use exactly one of the fields <em>png_sticker</em> or <em>tgs_sticker</em>. Animated stickers can be added to animated sticker sets and only to them. Animated sticker sets can have up to 50 stickers. Static sticker sets can have up to 120 stickers. Returns <em>True</em> on success.</p>
 <table class="table">
 <thead>
 <tr>
@@ -4392,7 +4521,13 @@ pre-formatted fixed-width code block written in the Python programming language
 <td>png_sticker</td>
 <td><a href="#inputfile">InputFile</a> or String</td>
 <td>Yes</td>
-<td><strong>Png</strong> image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. Pass a <em>file_id</em> as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. <a href="#sending-files">More info on Sending Files »</a></td>
+<td><strong>PNG</strong> image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. Pass a <em>file_id</em> as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. <a href="#sending-files">More info on Sending Files »</a></td>
+</tr>
+<tr>
+<td>tgs_sticker</td>
+<td><a href="#inputfile">InputFile</a></td>
+<td>Optional</td>
+<td><strong>TGS</strong> animation with the sticker, uploaded using multipart/form-data. See <a href="https://core.telegram.org/animated_stickers#technical-requirements"></a><a href="https://core.telegram.org/animated_stickers#technical-requirements">https://core.telegram.org/animated_stickers#technical-requirements</a> for technical requirements</td>
 </tr>
 <tr>
 <td>emojis</td>
@@ -4409,7 +4544,7 @@ pre-formatted fixed-width code block written in the Python programming language
 </tbody>
 </table>
 <h4><a class="anchor" name="setstickerpositioninset" href="#setstickerpositioninset" id="setstickerpositioninset"><i class="anchor-icon"></i></a>setStickerPositionInSet</h4>
-<p>Use this method to move a sticker in a set created by the bot to a specific position . Returns <em>True</em> on success.</p>
+<p>Use this method to move a sticker in a set created by the bot to a specific position. Returns <em>True</em> on success.</p>
 <table class="table">
 <thead>
 <tr>
@@ -4451,6 +4586,38 @@ pre-formatted fixed-width code block written in the Python programming language
 <td>String</td>
 <td>Yes</td>
 <td>File identifier of the sticker</td>
+</tr>
+</tbody>
+</table>
+<h4><a class="anchor" name="setstickersetthumb" href="#setstickersetthumb" id="setstickersetthumb"><i class="anchor-icon"></i></a>setStickerSetThumb</h4>
+<p>Use this method to set the thumbnail of a sticker set. Animated thumbnails can be set for animated sticker sets only. Returns <em>True</em> on success.</p>
+<table class="table">
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>name</td>
+<td>String</td>
+<td>Yes</td>
+<td>Sticker set name</td>
+</tr>
+<tr>
+<td>user_id</td>
+<td>Integer</td>
+<td>Yes</td>
+<td>User identifier of the sticker set owner</td>
+</tr>
+<tr>
+<td>thumb</td>
+<td><a href="#inputfile">InputFile</a> or String</td>
+<td>Optional</td>
+<td>A <strong>PNG</strong> image with the thumbnail, must be up to 128 kilobytes in size and have width and height exactly 100px, or a <strong>TGS</strong> animation with the thumbnail up to 32 kilobytes in size; see <a href="https://core.telegram.org/animated_stickers#technical-requirements"></a><a href="https://core.telegram.org/animated_stickers#technical-requirements">https://core.telegram.org/animated_stickers#technical-requirements</a> for animated sticker technical requirements. Pass a <em>file_id</em> as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. <a href="#sending-files">More info on Sending Files »</a>. Animated sticker set thumbnail can't be uploaded via HTTP URL.</td>
 </tr>
 </tbody>
 </table>
@@ -5013,7 +5180,7 @@ pre-formatted fixed-width code block written in the Python programming language
 </table>
 <p><strong>Note:</strong> This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.</p>
 <h4><a class="anchor" name="inlinequeryresultvoice" href="#inlinequeryresultvoice" id="inlinequeryresultvoice"><i class="anchor-icon"></i></a>InlineQueryResultVoice</h4>
-<p>Represents a link to a voice recording in an .ogg container encoded with OPUS. By default, this voice recording will be sent by the user. Alternatively, you can use <em>input_message_content</em> to send a message with the specified content instead of the the voice message.</p>
+<p>Represents a link to a voice recording in an .OGG container encoded with OPUS. By default, this voice recording will be sent by the user. Alternatively, you can use <em>input_message_content</em> to send a message with the specified content instead of the the voice message.</p>
 <table class="table">
 <thead>
 <tr>
